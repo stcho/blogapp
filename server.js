@@ -1,12 +1,14 @@
 var express = require('express')
 var path = require('path')
 var compression = require('compression')
+var bodyParser = require('body-parser')
 var MongoClient = require('mongodb').MongoClient;
 
 var app = express()
 var db;
 
-app.use(compression())
+app.use(compression());
+app.use(bodyParser.json());
 
 // serve our static files in public
 app.use(express.static(path.join(__dirname, 'public')))
@@ -21,9 +23,20 @@ MongoClient.connect('mongodb://localhost/blogapp', function(err, dbConnection) {
 });
 
 app.get('/api/users', function (req, res) {
-	db.collection('users').find().toArray(function(err, data) {
-		res.json(data);
+	db.collection('users').find().toArray(function(err, docs) {
+		res.json(docs);
 	});
+});
+
+app.post('/api/users', function (req, res) {
+	console.log("Req body:", req.body);
+	var newUser = req.body;
+	db.collection('users').insertOne(newUser, function(err, result) {
+		var newId = result.insertedId;
+		db.collection('users').find({_id: newId}).next(function(err, docs) {
+			res.json(docs);
+		})
+	})
 });
 
 // send all requests to index.html so browserHistory works for react-router
