@@ -2,16 +2,10 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 import GoogleLogin from 'react-google-login'
 
-var newUser = {
-	'googleid' : 3, 
-	'firstname' : 'Test3FirstName', 
-	'lastname' : 'Test3LastName', 
-	'imageurl' : 'imageurl3', 
-	'email' : 'test3@test.com'
-}
+var newUser;
 
 const responseGoogle = (response) => {
-  console.log(response);
+  console.log("responseGoogle failed");
 }
 
 var User = React.createClass({
@@ -59,7 +53,17 @@ export default React.createClass({
 		});
 	},
 
-	addUser: function() {
+	addUser: function(googleUser) {
+		//response is a GoogleUser, all methods: https://developers.google.com/identity/sign-in/web/reference#users
+	  var profile = googleUser.getBasicProfile();
+	  newUser = {
+	    'googleid' : profile.getId(),
+	    'firstname' : profile.getGivenName(),
+	    'lastname' : profile.getFamilyName(),
+	    'imageurl' : profile.getImageUrl(),
+	    'email' : profile.getEmail()
+	  };
+
 		fetch('/api/users', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
@@ -79,12 +83,11 @@ export default React.createClass({
 		return (
 			<div className="userBox"> 
         <UserList data={this.state.users} />
-        <button onClick={this.addUser}>Add User</button>
         <br/>
         <GoogleLogin
     clientId="663864375214-e2s33iqu1jqd1df07optmf3vib9p0982.apps.googleusercontent.com"
     buttonText="Google Sign-In"
-    onSuccess={responseGoogle}
+    onSuccess={this.addUser}
     onFailure={responseGoogle} />
       </div>
 		);

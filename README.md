@@ -10,7 +10,7 @@ npm install
 ```
 
 ####Setting Up Initial Database with MongoDB
-Download [mongo](https://www.mongodb.com/download-center#community)
+Download [MongoDB](https://www.mongodb.com/download-center#community)
 ```
 cd ~/path/to/mongodb/bin
 mongo
