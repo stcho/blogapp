@@ -1,5 +1,5 @@
 {
-  "name": "tutorial",
+  "name": "blogapp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,8 +14,9 @@
     "express": "^4.13.4",
     "if-env": "^1.0.0",
     "mongodb": "^2.2.10",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-google-login": "^2.5.1",
     "react-router": "^2.0.0"
   },
   "devDependencies": {

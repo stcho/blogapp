@@ -2,7 +2,7 @@ blogapp
 =======
 
 ####About
-Complete blogging application made with React, Express, Node, MongoDB, Webpack, React-Router
+Complete blogging application made with React, Express, Node, MongoDB, Webpack, React-Router, and Google Sign-In
 
 ####Setup
 ```
@@ -10,8 +10,8 @@ npm install
 ```
 
 ####Setting Up Initial Database with MongoDB
-```
 Download [mongo](https://www.mongodb.com/download-center#community)
+```
 cd ~/path/to/mongodb/bin
 mongo
 var db = new Mongo().getDB("blogapp");

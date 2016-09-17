@@ -1,4 +1,6 @@
 import React from 'react'
+import { browserHistory } from 'react-router'
+import GoogleLogin from 'react-google-login'
 
 var newUser = {
 	'googleid' : 3, 
@@ -6,6 +8,10 @@ var newUser = {
 	'lastname' : 'Test3LastName', 
 	'imageurl' : 'imageurl3', 
 	'email' : 'test3@test.com'
+}
+
+const responseGoogle = (response) => {
+  console.log(response);
 }
 
 var User = React.createClass({
@@ -47,7 +53,6 @@ export default React.createClass({
 		fetch('/api/users').then(response =>
 			response.json()
 		).then(data => {
-			console.log("Success");
 			this.setState({ users: data });
 		}).catch(err => {
 			console.log(err);
@@ -75,6 +80,12 @@ export default React.createClass({
 			<div className="userBox"> 
         <UserList data={this.state.users} />
         <button onClick={this.addUser}>Add User</button>
+        <br/>
+        <GoogleLogin
+    clientId="663864375214-e2s33iqu1jqd1df07optmf3vib9p0982.apps.googleusercontent.com"
+    buttonText="Google Sign-In"
+    onSuccess={responseGoogle}
+    onFailure={responseGoogle} />
       </div>
 		);
 	}
