@@ -2,8 +2,6 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 import GoogleLogin from 'react-google-login'
 
-var newUser;
-
 const responseGoogle = (response) => {
   console.log("responseGoogle failed");
 }
@@ -56,7 +54,7 @@ export default React.createClass({
 	addUser: function(googleUser) {
 		//response is a GoogleUser, all methods: https://developers.google.com/identity/sign-in/web/reference#users
 	  var profile = googleUser.getBasicProfile();
-	  newUser = {
+	  var newUser = {
 	    'googleid' : profile.getId(),
 	    'firstname' : profile.getGivenName(),
 	    'lastname' : profile.getFamilyName(),
@@ -70,18 +68,20 @@ export default React.createClass({
 			body: JSON.stringify(newUser)
 		}).then(response => 
 			response.json()
-		).then(data => {
-			console.log("Inside modifiedUser")
+		).then(data => {	
 			var modifiedUsers = this.state.users.concat(data);
 			this.setState({ users: modifiedUsers });
+			const path = '/' + data._id; 
+			browserHistory.push(path);
 		}).catch(err => {
 			console.log('Error adding user', err)
 		});
+		
 	},
 
 	render: function() {
 		return (
-			<div className="userBox"> 
+			<div> 
         <UserList data={this.state.users} />
         <br/>
         <GoogleLogin
