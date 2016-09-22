@@ -3,6 +3,7 @@ var path = require('path')
 var compression = require('compression')
 var bodyParser = require('body-parser')
 var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
 
 var app = express()
 var db;
@@ -22,12 +23,27 @@ MongoClient.connect('mongodb://localhost/blogapp', function(err, dbConnection) {
 	});
 });
 
+/* 
+GET all Users 
+*/
 app.get('/api/users', function (req, res) {
 	db.collection('users').find().toArray(function(err, docs) {
 		res.json(docs);
 	});
 });
 
+/* 
+GET one User
+*/
+app.get('/api/users/:id', function (req, res) {
+	db.collection('users').findOne({_id: ObjectId(req.params.id)}, function(err, user) {
+		res.json(user);
+	});
+});
+
+/* 
+POST one User 
+*/
 app.post('/api/users', function (req, res) {
 	console.log("Req body:", req.body);
 	var newUser = req.body;
