@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { Grid, Row, Col, Button } from 'react-bootstrap'
 
 export default React.createClass({
 	getInitialState: function() {
@@ -23,23 +23,20 @@ export default React.createClass({
 	render: function() {
 		return (
 			<div>
-				<Navbar>
-					<Navbar.Header>
-						<Navbar.Brand>
-							<a href="#">BlogApp</a>
-						</Navbar.Brand>
-					</Navbar.Header>
-					<Nav>
-						<NavItem href="#">Link1</NavItem>
-						<NavItem href="#">Link2</NavItem>
-					</Nav>
-					<Nav pullRight>
-						<NavItem href="#">Link3</NavItem>
-						<NavItem href="#">Link4</NavItem>
-					</Nav>
-				</Navbar>
-				<h3>FirstName: {this.state.user.firstname}</h3>
-				<h3>{this.props.params.userId}</h3>
+				<Grid>
+					<Row>
+						<Col md={4}>
+							<img className="HomeProfileImg" src={this.state.user.imageurl} alt="User picture" height="60" width="60" />
+							<span className="HomeProfileName"> {this.state.user.firstname} {this.state.user.lastname}</span> 
+							<div className="CreatePostButton">
+								<Button bsStyle="primary">Create Post</Button>
+							</div>
+						</Col>
+						<Col md={8}>
+							Create some posts and see them here!
+						</Col>
+					</Row>
+				</Grid>
 			</div>
 		)
 	}
