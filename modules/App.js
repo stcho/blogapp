@@ -1,6 +1,8 @@
 import React from 'react'
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 
+import Home from './Home'
+
 export default React.createClass({
   getInitialState: function() {
 		return { user: [] };
@@ -40,7 +42,7 @@ export default React.createClass({
 						<NavItem href="#"><img className="HomeNavImg" src={this.state.user.imageurl} alt="User picture" height="25" width="25" /> {this.state.user.firstname}</NavItem>
 					</Nav>
 				</Navbar>
-        {this.props.children}
+        {this.props.children || <Home/>}
       </div>
     )
   }

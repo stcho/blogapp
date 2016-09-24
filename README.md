@@ -2,7 +2,7 @@ blogapp
 =======
 
 ####About
-Complete blogging application made with React, Express, Node, MongoDB, Webpack, React-Router, and Google Sign-In
+Complete blogging application made with React, Express, Node, MongoDB, Webpack, React-Router, React-Bootstrap, and Google Sign-In
 
 ####Setup
 ```

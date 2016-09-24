@@ -11,8 +11,8 @@ const NoMatch = () => <h2>No match to the route</h2>;
 
 render((
   <Router history={browserHistory}>
-    <Route path="/" component={App}>
-    	<Route path="/:userId" component={Home} />
+    <Route path="/:userId" component={App}>
+    	<IndexRoute component={Home}/>
     	<Route path="/:userId/browse" component={Browse}/>
     	<Route path="/:userId/about" component={About}/>
     </Route>
