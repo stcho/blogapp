@@ -11,12 +11,11 @@ const NoMatch = () => <h2>No match to the route</h2>;
 
 render((
   <Router history={browserHistory}>
-    <Route path="/login" component={Login} />
     <Route path="/" component={App}>
     	<Route path="/:userId" component={Home} />
     	<Route path="/:userId/browse" component={Browse}/>
     	<Route path="/:userId/about" component={About}/>
     </Route>
-    <Route path="*" component={NoMatch} />
+    <Route path="*" component={Login} />
   </Router>
 ), document.getElementById('app'))

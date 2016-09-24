@@ -15,3 +15,7 @@
 .CreatePostButton {
 	margin-top: 10px;
 }
+
+#CreatePostTextarea {
+	height: 25%;
+}
