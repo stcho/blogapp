@@ -42,7 +42,7 @@ export default React.createClass({
 						<NavItem href="#"><img className="HomeNavImg" src={this.state.user.imageurl} alt="User picture" height="25" width="25" /> {this.state.user.firstname}</NavItem>
 					</Nav>
 				</Navbar>
-        {this.props.children || <Home/>}
+        {this.props.children || <Home user={this.state.user}/>}
       </div>
     )
   }
