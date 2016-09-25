@@ -25,4 +25,4 @@ npm start
 Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
-Pass User from App to Home
+Only allow creation of one Google Id User

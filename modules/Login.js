@@ -53,16 +53,17 @@ export default React.createClass({
 
 	addUser: function(googleUser) {
 		//response is a GoogleUser, all methods: https://developers.google.com/identity/sign-in/web/reference#users
+	  console.log(googleUser);
 	  var profile = googleUser.getBasicProfile();
 	  var newUser = {
-	    'googleid' : profile.getId(),
+	    'tokenid' : googleUser.tokenId,
 	    'firstname' : profile.getGivenName(),
 	    'lastname' : profile.getFamilyName(),
 	    'imageurl' : profile.getImageUrl(),
 	    'email' : profile.getEmail()
 	  };
 
-		fetch('/api/users', {
+		fetch('/api/auth/google', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify(newUser)

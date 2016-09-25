@@ -24,6 +24,30 @@ export default React.createClass({
 		this.setState({ body: e.target.value });
 	},
 
+	handleCreatePostSubmit: function(e) {
+		e.preventDefault();
+		var form = document.forms.createPostForm;
+		this.createPost({title: form.title.value, body: form.body.value, userId: this.props.user._id});
+		//close modal
+		this.close();
+	},
+
+	createPost: function(post) {
+		console.log(post);
+		fetch('/api/posts', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify(post)
+		}).then(response => 
+			response.json()
+		).then(data => {	
+			var modifiedPosts = this.state.posts.unshift(data);
+			this.setState({ posts: modifiedPosts });
+		}).catch(err => {
+			console.log('Error creating post', err)
+		});
+	},
+
 	render: function() {
 		return (
 			<div>
@@ -47,22 +71,27 @@ export default React.createClass({
 						<Modal.Title>Create Post</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<form>
+						<form name="createPostForm">
 							<FormGroup controlId="CreatePostTitle">
-								<FormControl placeholder="Title"></FormControl>
+								<FormControl 
+									placeholder="Title"
+									name="title"
+								>
+								</FormControl>
 							</FormGroup>
 
 							<FormGroup controlId="CreatePostTextarea">
 				        <FormControl 
 				          componentClass="textarea" 
 				          placeholder="Write your post here"
+				          name="body"
 				          value={this.state.body}
 				          onChange={this.onChangeCreatePostTextarea}
 				        >
 				        </FormControl>
 							</FormGroup> 
 			        
-			        <Button type="submit">
+			        <Button type="submit" onClick={this.handleCreatePostSubmit}>
 					      Submit
 					    </Button>
 			      </form>  
