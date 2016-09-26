@@ -12,8 +12,9 @@ var db;
 
 app.use(session({
 	secret: 'keyboard cat2', 
-	cookie: { maxAge: 60000 },
-	saveUninitialized: false
+	cookie: { maxAge: 259200000 },
+	saveUninitialized: false,
+	resave: false
 }))
 app.use(compression());
 app.use(bodyParser.json());
@@ -117,6 +118,21 @@ GET one Post
 /*
 POST one Post
 */
+app.post('/api/posts', function(req, res) {
+	if(!req.session.userId) {
+		console.log("Error creating post: User session missing");
+		res.status(400).send('Error creating post: User session missing');
+		return
+	}
+	var newPost = req.body;
+	newPost.userId = req.session.userId;
+	db.collection('posts').insertOne(newPost, function(err, result) {
+		var newPostId = result.insertedId;
+		db.collection('posts').find({_id: newPostId}).next(function(err, docs) {
+			res.json(docs);
+		})
+	})
+})
 
 app.get('/u/*', function (req, res) {
 	console.log("In /u/*", req.session.userId);

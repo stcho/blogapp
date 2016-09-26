@@ -45937,6 +45937,7 @@
 
 		getInitialState: function getInitialState() {
 			return {
+				posts: [],
 				showModal: false
 			};
 		},
@@ -45958,7 +45959,7 @@
 		handleCreatePostSubmit: function handleCreatePostSubmit(e) {
 			e.preventDefault();
 			var form = document.forms.createPostForm;
-			this.createPost({ title: form.title.value, body: form.body.value, userId: this.props.user._id });
+			this.createPost({ title: form.title.value, body: form.body.value });
 			//close modal
 			this.close();
 		},
@@ -45970,6 +45971,7 @@
 			fetch('/api/posts', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
 				body: JSON.stringify(post)
 			}).then(function (response) {
 				return response.json();
@@ -46213,6 +46215,8 @@
 
 	var _reactGoogleLogin2 = _interopRequireDefault(_reactGoogleLogin);
 
+	var _reactBootstrap = __webpack_require__(236);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var responseGoogle = function responseGoogle(response) {
@@ -46293,7 +46297,7 @@
 				return response.json();
 			}).then(function (data) {
 				var modifiedUsers = _this2.state.users.concat(data);
-				_this2.setState({ users: modifiedUsers });
+				_this2.setState({ users: modifiedUsers, signedInUser: data });
 				var path = '/u/' + data._id;
 				_reactRouter.browserHistory.push(path);
 			}).catch(function (err) {
@@ -46305,6 +46309,37 @@
 			return _react2.default.createElement(
 				'div',
 				null,
+				_react2.default.createElement(
+					_reactBootstrap.Navbar,
+					null,
+					_react2.default.createElement(
+						_reactBootstrap.Navbar.Header,
+						null,
+						_react2.default.createElement(
+							_reactBootstrap.Navbar.Brand,
+							null,
+							_react2.default.createElement(
+								'a',
+								{ href: '#' },
+								'BlogApp'
+							)
+						)
+					),
+					_react2.default.createElement(
+						_reactBootstrap.Nav,
+						null,
+						_react2.default.createElement(
+							_reactBootstrap.NavItem,
+							{ href: '#' },
+							'Browse'
+						),
+						_react2.default.createElement(
+							_reactBootstrap.NavItem,
+							{ href: '#' },
+							'About'
+						)
+					)
+				),
 				_react2.default.createElement(UserList, { data: this.state.users }),
 				_react2.default.createElement('br', null),
 				_react2.default.createElement(_reactGoogleLogin2.default, {

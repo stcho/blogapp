@@ -4,6 +4,7 @@ import { Grid, Row, Col, Button, Modal, FormGroup, FormControl } from 'react-boo
 export default React.createClass({
 	getInitialState: function() {
 		return { 
+			posts: [],
 			showModal: false
 		};
 	},
@@ -27,7 +28,7 @@ export default React.createClass({
 	handleCreatePostSubmit: function(e) {
 		e.preventDefault();
 		var form = document.forms.createPostForm;
-		this.createPost({title: form.title.value, body: form.body.value, userId: this.props.user._id});
+		this.createPost({title: form.title.value, body: form.body.value});
 		//close modal
 		this.close();
 	},
@@ -37,6 +38,7 @@ export default React.createClass({
 		fetch('/api/posts', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
+			credentials: 'include',
 			body: JSON.stringify(post)
 		}).then(response => 
 			response.json()

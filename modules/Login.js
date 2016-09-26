@@ -1,6 +1,7 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import GoogleLogin from 'react-google-login'
+import { Navbar, Nav, NavItem } from 'react-bootstrap'
 
 const responseGoogle = (response) => {
   console.log("responseGoogle failed");
@@ -72,7 +73,7 @@ export default React.createClass({
 			response.json()
 		).then(data => {	
 			var modifiedUsers = this.state.users.concat(data);
-			this.setState({ users: modifiedUsers });
+			this.setState({ users: modifiedUsers , signedInUser: data});
 			const path = '/u/' + data._id; 
 			browserHistory.push(path);
 		}).catch(err => {
@@ -84,6 +85,18 @@ export default React.createClass({
 	render: function() {
 		return (
 			<div> 
+				<Navbar>
+					<Navbar.Header>
+						<Navbar.Brand>
+							<a href="#">BlogApp</a>
+						</Navbar.Brand>
+					</Navbar.Header>
+					<Nav>
+						<NavItem href="#">Browse</NavItem>
+						<NavItem href="#">About</NavItem>
+					</Nav>
+				</Navbar>
+
         <UserList data={this.state.users} />
         <br/>
         <GoogleLogin
