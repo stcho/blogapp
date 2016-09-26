@@ -5,15 +5,22 @@ var bodyParser = require('body-parser')
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var https = require('https');
+var session = require('express-session')
 
 var app = express()
 var db;
 
+app.use(session({
+	secret: 'keyboard cat2', 
+	cookie: { maxAge: 60000 },
+	saveUninitialized: false
+}))
 app.use(compression());
 app.use(bodyParser.json());
 
-// serve our static files in public
-app.use(express.static(path.join(__dirname, 'public')))
+
+// serve our static files in static
+app.use('/static', express.static(path.join(__dirname, 'static')))
 
 // connect to mongodb client
 MongoClient.connect('mongodb://localhost/blogapp', function(err, dbConnection) {
@@ -59,6 +66,8 @@ app.post('/api/auth/google', function (req, res) {
 				db.collection('users').insertOne(newUser, function(err, result) {
 					var newId = result.insertedId;
 					db.collection('users').find({_id: newId}).next(function(err, docs) {
+						req.session.userId = newId;
+						console.log(req.session.userId)
 						res.json(docs);
 					})
 				})
@@ -81,6 +90,7 @@ app.get('/api/users', function (req, res) {
 GET one User
 */
 app.get('/api/users/:id', function (req, res) {
+	console.log("/api/users/id", req.session.userId)
 	db.collection('users').findOne({_id: ObjectId(req.params.id)}, function(err, user) {
 		res.json(user);
 	});
@@ -108,8 +118,28 @@ GET one Post
 POST one Post
 */
 
-// send all requests to index.html so browserHistory works for react-router
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+app.get('/u/*', function (req, res) {
+	console.log("In /u/*", req.session.userId);
+	if(req.session.userId == null) {
+		console.log("Redirect to home page from /u/*");
+		res.redirect('/');
+		return
+	}
+  res.sendFile(path.join(__dirname, 'static', 'index.html'))
 })
 
+
+app.get('/', function (req, res) {
+	console.log("Home Page")
+	if(req.session.userId != null) {
+		console.log("redirecting from * " + req.path);
+		res.redirect('/u/' + req.session.userId);
+		return
+	}
+  res.sendFile(path.join(__dirname, 'static', 'index.html'))
+})
+
+// send all requests to index.html so browserHistory works for react-router
+app.get('*', function (req, res) {
+	res.status(404).sendFile(path.join(__dirname, 'static', 'index.html'))
+})

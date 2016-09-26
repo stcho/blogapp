@@ -25,4 +25,4 @@ npm start
 Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
-Only allow creation of one Google Id User
+Only allow creation of one User with email

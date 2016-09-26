@@ -42,7 +42,7 @@ export default React.createClass({
 	},
 
 	loadUsersFromServer: function() {
-		fetch('/api/users').then(response =>
+		fetch('/api/users', {credentials: 'include'}).then(response =>
 			response.json()
 		).then(data => {
 			this.setState({ users: data });
@@ -53,7 +53,7 @@ export default React.createClass({
 
 	addUser: function(googleUser) {
 		//response is a GoogleUser, all methods: https://developers.google.com/identity/sign-in/web/reference#users
-	  console.log(googleUser);
+	  // console.log(googleUser);
 	  var profile = googleUser.getBasicProfile();
 	  var newUser = {
 	    'tokenid' : googleUser.tokenId,
@@ -66,13 +66,14 @@ export default React.createClass({
 		fetch('/api/auth/google', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
+			credentials: 'include',
 			body: JSON.stringify(newUser)
 		}).then(response => 
 			response.json()
 		).then(data => {	
 			var modifiedUsers = this.state.users.concat(data);
 			this.setState({ users: modifiedUsers });
-			const path = '/' + data._id; 
+			const path = '/u/' + data._id; 
 			browserHistory.push(path);
 		}).catch(err => {
 			console.log('Error adding user', err)

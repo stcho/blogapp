@@ -13,7 +13,7 @@ export default React.createClass({
 	},
 
 	loadUser: function() {
-		fetch('/api/users/' + this.props.params.userId).then(response =>
+		fetch('/api/users/' + this.props.params.userId, {credentials: 'include'}).then(response =>
 			response.json()		
 		).then(data => {
 			this.setState({user: data});

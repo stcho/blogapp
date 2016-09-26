@@ -12,6 +12,7 @@
     "body-parser": "^1.15.2",
     "compression": "^1.6.1",
     "express": "^4.13.4",
+    "express-session": "^1.14.1",
     "if-env": "^1.0.0",
     "mongodb": "^2.2.10",
     "react": "^15.3.1",
