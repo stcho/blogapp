@@ -9,7 +9,7 @@ var Post = React.createClass({
 					{this.props.title}
 				</div>
 				<div className="PostDate">
-					Date Created: 00/00/00
+					{this.props.timecreated}
 				</div>
 				<div className="PostBody">
 					{this.props.body}
@@ -23,7 +23,7 @@ var PostList = React.createClass({
 	render: function() {
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} title={post.title} body={post.body} ></Post>
+				<Post key={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
 			);
 		});
 		return (
@@ -69,10 +69,42 @@ export default React.createClass({
 		this.setState({ body: e.target.value });
 	},
 
+	convertDate: function(date) {
+		var dd = date.getDate();
+		var mm = date.getMonth()+1; //January is 0
+		var yyyy = date.getFullYear();
+		var hours = date.getHours();
+		var mins = date.getMinutes();
+
+		if(dd<10) {
+		  dd='0'+dd;
+		} 
+		if(mm<10) {
+		  mm='0'+mm;
+		}
+		if(mins<10) {
+			mins='0'+mins;
+		}
+		if(hours<=12) {
+			hours=hours;
+			mins=mins+'am';
+		} 
+		if(hours>12) {
+			hours=hours-12;
+			mins=mins+'pm';
+		}
+
+		date = mm+'/'+dd+'/'+yyyy+' '+hours+':'+mins ; 
+		return date;
+	},
+
 	handleCreatePostSubmit: function(e) {
 		e.preventDefault();
+		
+		var newDate = new Date();
+
 		var form = document.forms.createPostForm;
-		this.createPost({title: form.title.value, body: form.body.value});
+		this.createPost({title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate)});
 		//close modal
 		this.close();
 	},
