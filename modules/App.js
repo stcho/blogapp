@@ -9,11 +9,11 @@ export default React.createClass({
 	},
 
 	componentDidMount: function() {
-		this.loadUser();
+		this.loadSignedInUser();
 	},
 
-	loadUser: function() {
-		fetch('/api/users/' + this.props.params.userId, {credentials: 'include'}).then(response =>
+	loadSignedInUser: function() {
+		fetch('/api/signedinuser/', {credentials: 'include'}).then(response =>
 			response.json()		
 		).then(data => {
 			this.setState({user: data});
@@ -23,7 +23,7 @@ export default React.createClass({
 	},
 
   render: function() {
-    var homePath = "/" + this.props.params.userId;
+    var homePath = "/u/" + this.state.user._id;
     var aboutPath = homePath + "/about";
     var browsePath = homePath + "/browse";
     return (

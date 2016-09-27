@@ -1,6 +1,32 @@
 import React from 'react';
 import { Grid, Row, Col, Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 
+var Post = React.createClass({
+	render: function() {
+		return (
+			<div>
+				{this.props.title}
+				{this.props.body}
+			</div>
+		);
+	}
+});
+
+var PostList = React.createClass({
+	render: function() {
+		var postNodes = this.props.data.map(function(post) {
+			return (
+				<Post key={post._id} title={post.title} body={post.body} ></Post>
+			);
+		});
+		return (
+			<div> 
+        {postNodes}
+      </div>
+		);
+	}
+});
+
 export default React.createClass({
 	getInitialState: function() {
 		return { 
@@ -18,7 +44,17 @@ export default React.createClass({
   },
 
 	componentDidMount: function() {
-		
+		this.loadPosts();
+	},
+
+	loadPosts: function() {
+		fetch('/api/posts', {credentials: 'include'}).then(response =>
+			response.json()
+		).then(data => {
+			this.setState({ posts: data });
+		}).catch(err => {
+			console.log(err);
+		});
 	},
 
 	onChangeCreatePostTextarea: function(e) {
@@ -34,7 +70,6 @@ export default React.createClass({
 	},
 
 	createPost: function(post) {
-		console.log(post);
 		fetch('/api/posts', {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
@@ -43,7 +78,8 @@ export default React.createClass({
 		}).then(response => 
 			response.json()
 		).then(data => {	
-			var modifiedPosts = this.state.posts.unshift(data);
+			var dataArray = [data];
+			var modifiedPosts = dataArray.concat(this.state.posts);
 			this.setState({ posts: modifiedPosts });
 		}).catch(err => {
 			console.log('Error creating post', err)
@@ -64,6 +100,7 @@ export default React.createClass({
 						</Col>
 						<Col md={8}>
 							<p>Create some posts and see them here!</p>
+							<PostList data={this.state.posts} />
 						</Col>
 					</Row>
 				</Grid>

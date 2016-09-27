@@ -4,6 +4,11 @@ blogapp
 ####About
 Complete blogging application made with React, Express, Node, MongoDB, Webpack, React-Router, React-Bootstrap, and Google Sign-In
 
+####Features
+* Google sign-in and authentication
+* User creation
+* Post creation
+
 ####Setup
 ```
 npm install
@@ -26,3 +31,4 @@ Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
 Only allow creation of one User with email
+User Links instead of href for browse and about

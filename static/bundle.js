@@ -27146,13 +27146,13 @@
 		},
 
 		componentDidMount: function componentDidMount() {
-			this.loadUser();
+			this.loadSignedInUser();
 		},
 
-		loadUser: function loadUser() {
+		loadSignedInUser: function loadSignedInUser() {
 			var _this = this;
 
-			fetch('/api/users/' + this.props.params.userId, { credentials: 'include' }).then(function (response) {
+			fetch('/api/signedinuser/', { credentials: 'include' }).then(function (response) {
 				return response.json();
 			}).then(function (data) {
 				_this.setState({ user: data });
@@ -27162,7 +27162,7 @@
 		},
 
 		render: function render() {
-			var homePath = "/" + this.props.params.userId;
+			var homePath = "/u/" + this.state.user._id;
 			var aboutPath = homePath + "/about";
 			var browsePath = homePath + "/browse";
 			return _react2.default.createElement(
@@ -45932,6 +45932,34 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var Post = _react2.default.createClass({
+		displayName: 'Post',
+
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				this.props.title,
+				this.props.body
+			);
+		}
+	});
+
+	var PostList = _react2.default.createClass({
+		displayName: 'PostList',
+
+		render: function render() {
+			var postNodes = this.props.data.map(function (post) {
+				return _react2.default.createElement(Post, { key: post._id, title: post.title, body: post.body });
+			});
+			return _react2.default.createElement(
+				'div',
+				null,
+				postNodes
+			);
+		}
+	});
+
 	exports.default = _react2.default.createClass({
 		displayName: 'Home',
 
@@ -45950,7 +45978,21 @@
 			this.setState({ showModal: true });
 		},
 
-		componentDidMount: function componentDidMount() {},
+		componentDidMount: function componentDidMount() {
+			this.loadPosts();
+		},
+
+		loadPosts: function loadPosts() {
+			var _this = this;
+
+			fetch('/api/posts', { credentials: 'include' }).then(function (response) {
+				return response.json();
+			}).then(function (data) {
+				_this.setState({ posts: data });
+			}).catch(function (err) {
+				console.log(err);
+			});
+		},
 
 		onChangeCreatePostTextarea: function onChangeCreatePostTextarea(e) {
 			this.setState({ body: e.target.value });
@@ -45965,9 +46007,8 @@
 		},
 
 		createPost: function createPost(post) {
-			var _this = this;
+			var _this2 = this;
 
-			console.log(post);
 			fetch('/api/posts', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -45976,8 +46017,9 @@
 			}).then(function (response) {
 				return response.json();
 			}).then(function (data) {
-				var modifiedPosts = _this.state.posts.unshift(data);
-				_this.setState({ posts: modifiedPosts });
+				var dataArray = [data];
+				var modifiedPosts = dataArray.concat(_this2.state.posts);
+				_this2.setState({ posts: modifiedPosts });
 			}).catch(function (err) {
 				console.log('Error creating post', err);
 			});
@@ -46022,7 +46064,8 @@
 								'p',
 								null,
 								'Create some posts and see them here!'
-							)
+							),
+							_react2.default.createElement(PostList, { data: this.state.posts })
 						)
 					)
 				),

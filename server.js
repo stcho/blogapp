@@ -19,11 +19,14 @@ app.use(session({
 app.use(compression());
 app.use(bodyParser.json());
 
-
-// serve our static files in static
+/*
+Serve our static files in static
+*/
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
-// connect to mongodb client
+/*
+Connect to mongodb client and listen on localhost:3000
+*/
 MongoClient.connect('mongodb://localhost/blogapp', function(err, dbConnection) {
 	db = dbConnection;
 	var server = app.listen(3000, function() {
@@ -33,7 +36,7 @@ MongoClient.connect('mongodb://localhost/blogapp', function(err, dbConnection) {
 });
 
 /*
-POST Authentication
+POST Authentication and User Creation
 */
 app.post('/api/auth/google', function (req, res) {
 	//grab id token, pull name and email from the req
@@ -88,11 +91,11 @@ app.get('/api/users', function (req, res) {
 });
 
 /* 
-GET one User
+GET signed in User
 */
-app.get('/api/users/:id', function (req, res) {
-	console.log("/api/users/id", req.session.userId)
-	db.collection('users').findOne({_id: ObjectId(req.params.id)}, function(err, user) {
+app.get('/api/signedinuser/', function (req, res) {
+	console.log("GET signed in User /api/signedinuser/", req.session.userId)
+	db.collection('users').findOne({_id: ObjectId(req.session.userId)}, function(err, user) {
 		res.json(user);
 	});
 });
@@ -112,8 +115,13 @@ app.post('/api/users', function (req, res) {
 });
 
 /*
-GET one Post
+GET all Post for User id
 */
+app.get('/api/posts', function (req, res) {
+	db.collection('posts').find({userId: req.session.userId}).toArray(function(err, docs) {
+		res.json(docs);
+	})
+})
 
 /*
 POST one Post
@@ -134,8 +142,12 @@ app.post('/api/posts', function(req, res) {
 	})
 })
 
+/*
+App Component
+*/
 app.get('/u/*', function (req, res) {
-	console.log("In /u/*", req.session.userId);
+	//If there is no user session redirect to Login
+	//Else render App Component
 	if(req.session.userId == null) {
 		console.log("Redirect to home page from /u/*");
 		res.redirect('/');
@@ -144,18 +156,22 @@ app.get('/u/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'static', 'index.html'))
 })
 
-
+/*
+Login Component
+*/
 app.get('/', function (req, res) {
-	console.log("Home Page")
+	//If user session already exists redirect to Home
+	//Else render Login
 	if(req.session.userId != null) {
-		console.log("redirecting from * " + req.path);
 		res.redirect('/u/' + req.session.userId);
 		return
 	}
   res.sendFile(path.join(__dirname, 'static', 'index.html'))
 })
 
-// send all requests to index.html so browserHistory works for react-router
+/*
+Send all requests to index.html so browserHistory works for react-router
+*/
 app.get('*', function (req, res) {
 	res.status(404).sendFile(path.join(__dirname, 'static', 'index.html'))
 })
