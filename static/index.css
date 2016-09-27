@@ -31,7 +31,9 @@
 
 .PostTitle {
 	font-size: 125%;
-	margin: 10px;
+	margin-left: 10px;
+	margin-top: 10px;
+	display:inline-block;
 }
 
 .PostBody {
@@ -41,5 +43,6 @@
 
 .PostDate {
 	font-size: 85%;
-	margin: 10px;
+	margin-left: 10px;
+	display:inline-block
 }

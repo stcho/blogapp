@@ -31,4 +31,3 @@ Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
 Only allow creation of one User with email
-User Links instead of href for browse and about

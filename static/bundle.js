@@ -27130,6 +27130,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRouter = __webpack_require__(172);
+
 	var _reactBootstrap = __webpack_require__(236);
 
 	var _Home = __webpack_require__(487);
@@ -27178,8 +27180,8 @@
 							_reactBootstrap.Navbar.Brand,
 							null,
 							_react2.default.createElement(
-								'a',
-								{ href: homePath },
+								_reactRouter.Link,
+								{ to: homePath },
 								'BlogApp'
 							)
 						)
@@ -27189,13 +27191,21 @@
 						null,
 						_react2.default.createElement(
 							_reactBootstrap.NavItem,
-							{ href: browsePath },
-							'Browse'
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ to: browsePath },
+								'Browse'
+							)
 						),
 						_react2.default.createElement(
 							_reactBootstrap.NavItem,
-							{ href: aboutPath },
-							'About'
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ to: aboutPath },
+								'About'
+							)
 						)
 					),
 					_react2.default.createElement(
