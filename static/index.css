@@ -19,3 +19,27 @@
 #CreatePostTextarea {
 	height: 25%;
 }
+
+.PostBox {
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 3px;
+	border-color: #e6e6e6;
+	background: #fbfbfb;
+
+}
+
+.PostTitle {
+	font-size: 125%;
+	margin: 10px;
+}
+
+.PostBody {
+	font-size: 100%;
+	margin: 10px;
+}
+
+.PostDate {
+	font-size: 85%;
+	margin: 10px;
+}

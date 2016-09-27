@@ -4,9 +4,16 @@ import { Grid, Row, Col, Button, Modal, FormGroup, FormControl } from 'react-boo
 var Post = React.createClass({
 	render: function() {
 		return (
-			<div>
-				{this.props.title}
-				{this.props.body}
+			<div className="PostBox">
+				<div className="PostTitle">
+					{this.props.title}
+				</div>
+				<div className="PostDate">
+					Date Created: 00/00/00
+				</div>
+				<div className="PostBody">
+					{this.props.body}
+				</div>
 			</div>
 		);
 	}
@@ -51,6 +58,7 @@ export default React.createClass({
 		fetch('/api/posts', {credentials: 'include'}).then(response =>
 			response.json()
 		).then(data => {
+			var flipData = data.reverse()
 			this.setState({ posts: data });
 		}).catch(err => {
 			console.log(err);
@@ -99,8 +107,7 @@ export default React.createClass({
 							</div>
 						</Col>
 						<Col md={8}>
-							<p>Create some posts and see them here!</p>
-							<PostList data={this.state.posts} />
+							<PostList data={this.state.posts} />							
 						</Col>
 					</Row>
 				</Grid>

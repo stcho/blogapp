@@ -45938,9 +45938,22 @@
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
-				null,
-				this.props.title,
-				this.props.body
+				{ className: 'PostBox' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'PostTitle' },
+					this.props.title
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'PostDate' },
+					'Date Created: 00/00/00'
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'PostBody' },
+					this.props.body
+				)
 			);
 		}
 	});
@@ -45988,6 +46001,7 @@
 			fetch('/api/posts', { credentials: 'include' }).then(function (response) {
 				return response.json();
 			}).then(function (data) {
+				var flipData = data.reverse();
 				_this.setState({ posts: data });
 			}).catch(function (err) {
 				console.log(err);
@@ -46060,11 +46074,6 @@
 						_react2.default.createElement(
 							_reactBootstrap.Col,
 							{ md: 8 },
-							_react2.default.createElement(
-								'p',
-								null,
-								'Create some posts and see them here!'
-							),
 							_react2.default.createElement(PostList, { data: this.state.posts })
 						)
 					)
