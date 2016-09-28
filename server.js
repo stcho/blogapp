@@ -115,7 +115,7 @@ app.post('/api/users', function (req, res) {
 });
 
 /*
-GET all Post for User id
+GET all Post for a User id
 */
 app.get('/api/posts', function (req, res) {
 	db.collection('posts').find({userId: req.session.userId}).toArray(function(err, docs) {
@@ -126,7 +126,7 @@ app.get('/api/posts', function (req, res) {
 /*
 POST one Post
 */
-app.post('/api/posts', function(req, res) {
+app.post('/api/posts', function (req, res) {
 	if(!req.session.userId) {
 		console.log("Error creating post: User session missing");
 		res.status(400).send('Error creating post: User session missing');
@@ -139,6 +139,21 @@ app.post('/api/posts', function(req, res) {
 		db.collection('posts').find({_id: newPostId}).next(function(err, docs) {
 			res.json(docs);
 		})
+	})
+})
+
+/*
+DELETE one Post
+*/
+app.delete('/api/posts/:id', function (req, res) {
+	if(!req.session.userId) {
+		console.log("Error deleting post: User session missing");
+		res.status(400).send('Error deleting post: User session missing');
+		return
+	}
+	var postToDelete = req.params.id;
+	db.collection('posts').remove({_id: ObjectId(postToDelete)}, function(err) {
+		res.status(400).send('Error removing post from db: ', err);
 	})
 })
 

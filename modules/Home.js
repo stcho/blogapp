@@ -2,6 +2,27 @@ import React from 'react';
 import { Grid, Row, Col, Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 
 var Post = React.createClass({
+	deletePost: function() {
+		var confirmation = confirm('Are you sure you want to delete this post?');
+		if (confirmation === true) {
+			fetch('/api/posts/'+this.props.id, {
+				method: 'DELETE',
+				credentials: 'include'
+			}).catch(err => {
+				console.log('Error deleting user', err)
+			});
+			//find post in this.state.posts array with this.props.id and delete it
+			// function findDeletedPost(post) {
+			// 	return post._id == this.props.id
+			// }
+			// console.log("Find Deleted post in state:", this.props.data.find(findDeletedPost));
+
+			// var dataArray = [data];
+			// var modifiedPosts = dataArray.concat(this.state.posts);
+			// this.setState({ posts: modifiedPosts });
+		}
+	},
+
 	render: function() {
 		return (
 			<div className="PostBox">
@@ -10,6 +31,9 @@ var Post = React.createClass({
 				</div>
 				<div className="PostDate">
 					{this.props.timecreated}
+				</div>
+				<div className="PostDelete">
+					<Button onClick={this.deletePost}>x</Button>
 				</div>
 				<div className="PostBody">
 					{this.props.body}
@@ -23,7 +47,7 @@ var PostList = React.createClass({
 	render: function() {
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
+				<Post key={post._id} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
 			);
 		});
 		return (
@@ -99,12 +123,12 @@ export default React.createClass({
 	},
 
 	handleCreatePostSubmit: function(e) {
-		e.preventDefault();
-		
+		e.preventDefault();	
 		var newDate = new Date();
-
 		var form = document.forms.createPostForm;
 		this.createPost({title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate)});
+		form.title.value = '';
+		form.body.value = '';
 		//close modal
 		this.close();
 	},

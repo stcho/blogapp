@@ -46,3 +46,9 @@
 	margin-left: 10px;
 	display:inline-block
 }
+
+.PostDelete {
+	font-size: 100%;	
+	text-align: right;
+	margin-top: -35px;
+}
