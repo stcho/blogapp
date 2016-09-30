@@ -46662,12 +46662,13 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
+	      user: [],
 	      posts: []
 	    };
 	  },
 
 	  componentDidMount: function componentDidMount() {
-	    console.log("Params Id", this.props.params.userId);
+	    this.loadUser();
 	    this.loadPosts();
 	  },
 
@@ -46679,6 +46680,18 @@
 	    }).then(function (data) {
 	      var flipData = data.reverse();
 	      _this.setState({ posts: data });
+	    }).catch(function (err) {
+	      console.log(err);
+	    });
+	  },
+
+	  loadUser: function loadUser() {
+	    var _this2 = this;
+
+	    fetch('/api/users/' + this.props.params.userId, { credentials: 'include' }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      _this2.setState({ user: data });
 	    }).catch(function (err) {
 	      console.log(err);
 	    });
@@ -46696,12 +46709,20 @@
 	          null,
 	          _react2.default.createElement(
 	            _reactBootstrap.Col,
-	            { md: 12 },
+	            { md: 3 },
+	            _react2.default.createElement('img', { className: 'HomeProfileImg', src: this.state.user.imageurl, alt: 'User picture', height: '60', width: '60' }),
 	            _react2.default.createElement(
-	              'p',
-	              null,
-	              'This is the user profile'
-	            ),
+	              'span',
+	              { className: 'HomeProfileName' },
+	              ' ',
+	              this.state.user.firstname,
+	              ' ',
+	              this.state.user.lastname
+	            )
+	          ),
+	          _react2.default.createElement(
+	            _reactBootstrap.Col,
+	            { md: 8 },
 	            _react2.default.createElement(PostList, { data: this.state.posts })
 	          )
 	        )

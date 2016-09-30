@@ -103,8 +103,16 @@ app.get('/api/users', function (req, res) {
 GET signed in User
 */
 app.get('/api/signedinuser/', function (req, res) {
-	console.log("GET signed in User /api/signedinuser/", req.session.userId)
 	db.collection('users').findOne({_id: ObjectId(req.session.userId)}, function(err, user) {
+		res.json(user);
+	});
+});
+
+/* 
+GET User for Profile
+*/
+app.get('/api/users/:id', function (req, res) {
+	db.collection('users').findOne({_id: ObjectId(req.params.id)}, function(err, user) {
 		res.json(user);
 	});
 });
@@ -181,7 +189,6 @@ Login Component
 app.get('/profile/:id', function (req, res) {
 	//If user session is equal to req.params.id redirect to user edit page
 	//Else sendfile for Profile to be rendered with user req.params.id
-	console.log("IN PROFILE", req.session.userId == req.params.id );
 	if(req.session.userId == null) {
 		console.log("Redirect to home page from /profile/:id");
 		res.redirect('/');
