@@ -89,7 +89,11 @@ export default React.createClass({
 		});
 	},
 
-	onChangeCreatePostTextarea: function(e) {
+	onChangeCreatePostTitle: function(e) {
+		this.setState({ title: e.target.value });
+	},
+
+	onChangeCreatePostBody: function(e) {
 		this.setState({ body: e.target.value });
 	},
 
@@ -127,8 +131,8 @@ export default React.createClass({
 		var newDate = new Date();
 		var form = document.forms.createPostForm;
 		this.createPost({title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate)});
-		form.title.value = '';
-		form.body.value = '';
+		this.setState({ title: '' });
+		this.setState({ body: '' });
 		//close modal
 		this.close();
 	},
@@ -178,6 +182,8 @@ export default React.createClass({
 								<FormControl 
 									placeholder="Title"
 									name="title"
+									value={this.state.title}
+				          onChange={this.onChangeCreatePostTitle}
 								>
 								</FormControl>
 							</FormGroup>
@@ -188,7 +194,7 @@ export default React.createClass({
 				          placeholder="Write your post here"
 				          name="body"
 				          value={this.state.body}
-				          onChange={this.onChangeCreatePostTextarea}
+				          onChange={this.onChangeCreatePostBody}
 				        >
 				        </FormControl>
 							</FormGroup> 

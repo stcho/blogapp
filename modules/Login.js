@@ -1,7 +1,7 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import GoogleLogin from 'react-google-login'
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { Navbar, Nav, NavItem, Grid, Row, Col } from 'react-bootstrap'
 
 const responseGoogle = (response) => {
   console.log("responseGoogle failed");
@@ -11,8 +11,7 @@ var User = React.createClass({
 	render: function() {
 		return (
 			<div className="user">
-				{this.props.firstname}
-				{this.props.email}
+				<span> {this.props.email}</span>
 			</div>
 		);
 	}
@@ -96,14 +95,22 @@ export default React.createClass({
 						<NavItem href="#">About</NavItem>
 					</Nav>
 				</Navbar>
-
-        <UserList data={this.state.users} />
-        <br/>
-        <GoogleLogin
+        
+        <Grid>
+    			<Row>
+    				<Col md={12}>
+							<h4>List Of All Users:</h4>
+    					<UserList data={this.state.users} />
+    					<br/>
+    					<GoogleLogin
     clientId="663864375214-e2s33iqu1jqd1df07optmf3vib9p0982.apps.googleusercontent.com"
     buttonText="Google Sign-In"
     onSuccess={this.addUser}
     onFailure={responseGoogle} />
+    				</Col>
+    			</Row>
+    		</Grid>
+
       </div>
 		);
 	}

@@ -46048,7 +46048,11 @@
 			});
 		},
 
-		onChangeCreatePostTextarea: function onChangeCreatePostTextarea(e) {
+		onChangeCreatePostTitle: function onChangeCreatePostTitle(e) {
+			this.setState({ title: e.target.value });
+		},
+
+		onChangeCreatePostBody: function onChangeCreatePostBody(e) {
 			this.setState({ body: e.target.value });
 		},
 
@@ -46086,8 +46090,8 @@
 			var newDate = new Date();
 			var form = document.forms.createPostForm;
 			this.createPost({ title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate) });
-			form.title.value = '';
-			form.body.value = '';
+			this.setState({ title: '' });
+			this.setState({ body: '' });
 			//close modal
 			this.close();
 		},
@@ -46173,7 +46177,9 @@
 								{ controlId: 'CreatePostTitle' },
 								_react2.default.createElement(_reactBootstrap.FormControl, {
 									placeholder: 'Title',
-									name: 'title'
+									name: 'title',
+									value: this.state.title,
+									onChange: this.onChangeCreatePostTitle
 								})
 							),
 							_react2.default.createElement(
@@ -46184,7 +46190,7 @@
 									placeholder: 'Write your post here',
 									name: 'body',
 									value: this.state.body,
-									onChange: this.onChangeCreatePostTextarea
+									onChange: this.onChangeCreatePostBody
 								})
 							),
 							_react2.default.createElement(
@@ -46354,8 +46360,12 @@
 			return _react2.default.createElement(
 				'div',
 				{ className: 'user' },
-				this.props.firstname,
-				this.props.email
+				_react2.default.createElement(
+					'span',
+					null,
+					' ',
+					this.props.email
+				)
 			);
 		}
 	});
@@ -46464,13 +46474,30 @@
 						)
 					)
 				),
-				_react2.default.createElement(UserList, { data: this.state.users }),
-				_react2.default.createElement('br', null),
-				_react2.default.createElement(_reactGoogleLogin2.default, {
-					clientId: '663864375214-e2s33iqu1jqd1df07optmf3vib9p0982.apps.googleusercontent.com',
-					buttonText: 'Google Sign-In',
-					onSuccess: this.addUser,
-					onFailure: responseGoogle })
+				_react2.default.createElement(
+					_reactBootstrap.Grid,
+					null,
+					_react2.default.createElement(
+						_reactBootstrap.Row,
+						null,
+						_react2.default.createElement(
+							_reactBootstrap.Col,
+							{ md: 12 },
+							_react2.default.createElement(
+								'h4',
+								null,
+								'List Of All Users:'
+							),
+							_react2.default.createElement(UserList, { data: this.state.users }),
+							_react2.default.createElement('br', null),
+							_react2.default.createElement(_reactGoogleLogin2.default, {
+								clientId: '663864375214-e2s33iqu1jqd1df07optmf3vib9p0982.apps.googleusercontent.com',
+								buttonText: 'Google Sign-In',
+								onSuccess: this.addUser,
+								onFailure: responseGoogle })
+						)
+					)
+				)
 			);
 		}
 	});
