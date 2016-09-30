@@ -1,26 +1,13 @@
 import React from 'react';
 import { Grid, Row, Col, Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 
-var Post = React.createClass({
-	deletePost: function() {
-		var confirmation = confirm('Are you sure you want to delete this post?');
-		if (confirmation === true) {
-			fetch('/api/posts/'+this.props.id, {
-				method: 'DELETE',
-				credentials: 'include'
-			}).catch(err => {
-				console.log('Error deleting user', err)
-			});
-			//find post in this.state.posts array with this.props.id and delete it
-			// function findDeletedPost(post) {
-			// 	return post._id == this.props.id
-			// }
-			// console.log("Find Deleted post in state:", this.props.data.find(findDeletedPost));
+//global array for all of the posts
+// var allPosts;
 
-			// var dataArray = [data];
-			// var modifiedPosts = dataArray.concat(this.state.posts);
-			// this.setState({ posts: modifiedPosts });
-		}
+var Post = React.createClass({
+	handleDelete: function(e) {
+		e.preventDefault();
+		this.props.deletePost(this.props.id);
 	},
 
 	render: function() {
@@ -33,7 +20,7 @@ var Post = React.createClass({
 					{this.props.timecreated}
 				</div>
 				<div className="PostDelete">
-					<Button onClick={this.deletePost}>x</Button>
+					<Button onClick={this.handleDelete}>x</Button>
 				</div>
 				<div className="PostBody">
 					{this.props.body}
@@ -45,9 +32,10 @@ var Post = React.createClass({
 
 var PostList = React.createClass({
 	render: function() {
+		var deletePost = this.props.deletePost;
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
+				<Post key={post._id} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
 			);
 		});
 		return (
@@ -154,6 +142,28 @@ export default React.createClass({
 		});
 	},
 
+	deletePost: function(id) {
+		var confirmation = confirm('Are you sure you want to delete this post?');
+		if (confirmation === true) {
+			fetch('/api/posts/'+id, {
+				method: 'DELETE',
+				credentials: 'include'
+			}).catch(err => {
+				console.log('Error deleting user', err)
+			});
+			//find specific post with id in the array of all posts and delete it
+			function findDeletedPost(post) {
+				return post._id == id;;
+			}
+			var postsArray = this.state.posts;
+			var indexToSplice = this.state.posts.findIndex(findDeletedPost)
+			postsArray.splice(indexToSplice, 1);
+			var modifiedPostsArray = postsArray;
+			console.log("Modified post array", modifiedPostsArray);
+			this.setState({ posts: modifiedPostsArray });
+		}
+	},
+
 	render: function() {
 		return (
 			<div>
@@ -167,7 +177,7 @@ export default React.createClass({
 							</div>
 						</Col>
 						<Col md={8}>
-							<PostList data={this.state.posts} />							
+							<PostList data={this.state.posts} deletePost={this.deletePost} />							
 						</Col>
 					</Row>
 				</Grid>
