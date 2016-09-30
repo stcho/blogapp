@@ -66,14 +66,23 @@ app.post('/api/auth/google', function (req, res) {
 				return
 			}
 			else {
-				var newUser = {email: email, firstname: firstname, lastname: lastname, imageurl: imageurl}
-				db.collection('users').insertOne(newUser, function(err, result) {
-					var newId = result.insertedId;
-					db.collection('users').find({_id: newId}).next(function(err, docs) {
-						req.session.userId = newId;
-						console.log(req.session.userId)
-						res.json(docs);
-					})
+				//If no user with email was found in db create user.
+				//Else send found user
+				db.collection('users').find({email: email}).next(function(err, data) {
+					if (data === null) {
+						var newUser = {email: email, firstname: firstname, lastname: lastname, imageurl: imageurl}
+						db.collection('users').insertOne(newUser, function(err, result) {
+							var newId = result.insertedId;
+							db.collection('users').find({_id: newId}).next(function(err, docs) {
+								req.session.userId = newId;
+								res.json(docs);
+							})
+						})
+					} 
+					else {
+						req.session.userId = data._id;
+						res.json(data);
+					}
 				})
 			}
 		})
