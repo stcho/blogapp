@@ -124,10 +124,19 @@ app.post('/api/users', function (req, res) {
 });
 
 /*
-GET all Post for a User id
+GET all Post for signed in User 
 */
 app.get('/api/posts', function (req, res) {
 	db.collection('posts').find({userId: req.session.userId}).toArray(function(err, docs) {
+		res.json(docs);
+	})
+})
+
+/*
+GET all Post for Profile 
+*/
+app.get('/api/posts/:id', function (req, res) {
+	db.collection('posts').find({userId: req.params.id}).toArray(function(err, docs) {
 		res.json(docs);
 	})
 })
@@ -164,6 +173,25 @@ app.delete('/api/posts/:id', function (req, res) {
 	db.collection('posts').remove({_id: ObjectId(postToDelete)}, function(err) {
 		res.status(400).send('Error removing post from db: ', err);
 	})
+})
+
+/*
+Login Component
+*/
+app.get('/profile/:id', function (req, res) {
+	//If user session is equal to req.params.id redirect to user edit page
+	//Else sendfile for Profile to be rendered with user req.params.id
+	console.log("IN PROFILE", req.session.userId == req.params.id );
+	if(req.session.userId == null) {
+		console.log("Redirect to home page from /profile/:id");
+		res.redirect('/');
+		return
+	}
+	if(req.session.userId == req.params.id) {
+		res.redirect('/u/' + req.session.userId + '/user');
+		return
+	}
+  res.sendFile(path.join(__dirname, 'static', 'index.html'))
 })
 
 /*
