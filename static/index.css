@@ -52,3 +52,34 @@
 	text-align: right;
 	margin-top: -35px;
 }
+
+.card {
+  background:#fbfbfb;
+  border:1px solid #e6e6e6;
+  border-bottom:1px solid #BBB;
+  border-radius: 8px;
+  float:left;
+  width:260px;  
+  height:250px;
+  margin-right: 25px;
+  margin-bottom: 25px;
+  overflow: hidden;
+}
+
+.cardImg {
+	border-radius: 8px;
+	margin-left: 100px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.cardName {
+	font-size: 150%;
+	text-align: center;
+}
+
+.cardDetail {
+	font-size: 110%;
+	margin-top: 15px;
+  text-align: center;
+}

@@ -151,16 +151,14 @@ export default React.createClass({
 			}).catch(err => {
 				console.log('Error deleting user', err)
 			});
-			//find specific post with id in the array of all posts and delete it
+			//find specific post with id in this.state.posts and delete it
 			function findDeletedPost(post) {
 				return post._id == id;;
 			}
 			var postsArray = this.state.posts;
 			var indexToSplice = this.state.posts.findIndex(findDeletedPost)
 			postsArray.splice(indexToSplice, 1);
-			var modifiedPostsArray = postsArray;
-			console.log("Modified post array", modifiedPostsArray);
-			this.setState({ posts: modifiedPostsArray });
+			this.setState({ posts: postsArray });
 		}
 	},
 

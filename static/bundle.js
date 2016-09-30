@@ -46106,7 +46106,7 @@
 		deletePost: function deletePost(id) {
 			var confirmation = confirm('Are you sure you want to delete this post?');
 			if (confirmation === true) {
-				//find specific post with id in the array of all posts and delete it
+				//find specific post with id in this.state.posts and delete it
 				var findDeletedPost = function findDeletedPost(post) {
 					return post._id == id;;
 				};
@@ -46120,9 +46120,7 @@
 				var postsArray = this.state.posts;
 				var indexToSplice = this.state.posts.findIndex(findDeletedPost);
 				postsArray.splice(indexToSplice, 1);
-				var modifiedPostsArray = postsArray;
-				console.log("Modified post array", modifiedPostsArray);
-				this.setState({ posts: modifiedPostsArray });
+				this.setState({ posts: postsArray });
 			}
 		},
 
@@ -46309,8 +46307,69 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var User = _react2.default.createClass({
+	  displayName: 'User',
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'card' },
+	      _react2.default.createElement('img', { className: 'cardImg', src: this.props.imageurl, alt: 'User picture', height: '60', width: '60' }),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'cardName' },
+	        ' ',
+	        this.props.firstname,
+	        ' ',
+	        this.props.lastname
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'cardDetail' },
+	        this.props.email
+	      )
+	    );
+	  }
+	});
+
+	var UserList = _react2.default.createClass({
+	  displayName: 'UserList',
+
+	  render: function render() {
+	    var userNodes = this.props.data.map(function (user) {
+	      return _react2.default.createElement(User, { key: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, imageurl: user.imageurl });
+	    });
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'userList' },
+	      userNodes
+	    );
+	  }
+	});
+
 	exports.default = _react2.default.createClass({
 	  displayName: 'Browse',
+
+	  getInitialState: function getInitialState() {
+	    return { users: [] };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this.loadUsersFromServer();
+	  },
+
+	  loadUsersFromServer: function loadUsersFromServer() {
+	    var _this = this;
+
+	    fetch('/api/users', { credentials: 'include' }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      _this.setState({ users: data });
+	    }).catch(function (err) {
+	      console.log(err);
+	    });
+	  },
+
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
@@ -46324,11 +46383,7 @@
 	          _react2.default.createElement(
 	            _reactBootstrap.Col,
 	            { md: 12 },
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              'This is the Browse page.'
-	            )
+	            _react2.default.createElement(UserList, { data: this.state.users })
 	          )
 	        )
 	      )
