@@ -7,6 +7,7 @@ Complete blogging application made with React, Express, Node, MongoDB, Webpack, 
 ####Features
 * Google sign-in and authentication
 * User Creation
+* User Update
 * Post Creation
 * Post Deletion
 

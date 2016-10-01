@@ -81,6 +81,7 @@ export default React.createClass({
             <Col md={3}>
               <img className="HomeProfileImg" src={this.state.user.imageurl} alt="User picture" height="60" width="60" />
               <span className="HomeProfileName"> {this.state.user.firstname} {this.state.user.lastname}</span> 
+              <div className="HomeProfileBio">{this.state.user.bio}</div>
             </Col>
             <Col md={8}>
               <PostList data={this.state.posts} />

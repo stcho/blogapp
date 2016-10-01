@@ -17,7 +17,7 @@ render((
     	<Route path="/u/:userId/browse" component={Browse}/>
     	<Route path="/u/:userId/about" component={About}/>
     	<Route path="/profile/:userId" component={Profile}/>
-    	<Route path="/u/:userId/user" component={User}/>
+    	<Route path="/user/:userId" component={User}/>
     </Route>
     <Route path="/*" component={NoMatch} />
   </Router>

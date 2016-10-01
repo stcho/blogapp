@@ -131,6 +131,19 @@ app.post('/api/users', function (req, res) {
 	})
 });
 
+/* 
+PUT one User 
+*/
+app.put('/api/users', function (req, res) {
+	db.collection('users').updateOne({_id: ObjectId(req.session.userId)}, req.body, function(err, result) {
+		if (err) console.log(err);
+		db.collection('users').findOne({_id: ObjectId(req.session.userId)}, function(err, user) {
+			if (err) console.log(err);
+			res.json(user);
+		});
+	})
+})
+
 /*
 GET all Post for signed in User 
 */
@@ -184,18 +197,32 @@ app.delete('/api/posts/:id', function (req, res) {
 })
 
 /*
-Login Component
+User Component
+*/
+app.get('/user/:id', function (req, res) {
+	//If user session is not equal to req.params.id redirect to login
+	//Else sendfile for User to be rendered with user req.params.id
+	if(req.session.userId == null || req.session.userId != req.params.id) {
+		console.log("Redirect to login page from /user/:id");
+		res.redirect('/');
+		return
+	}
+  res.sendFile(path.join(__dirname, 'static', 'index.html'))
+})
+
+/*
+Profile Component
 */
 app.get('/profile/:id', function (req, res) {
 	//If user session is equal to req.params.id redirect to user edit page
 	//Else sendfile for Profile to be rendered with user req.params.id
 	if(req.session.userId == null) {
-		console.log("Redirect to home page from /profile/:id");
+		console.log("Redirect to login page from /profile/:id");
 		res.redirect('/');
 		return
 	}
 	if(req.session.userId == req.params.id) {
-		res.redirect('/u/' + req.session.userId + '/user');
+		res.redirect('/user/' + req.session.userId);
 		return
 	}
   res.sendFile(path.join(__dirname, 'static', 'index.html'))

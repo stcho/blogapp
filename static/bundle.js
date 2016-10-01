@@ -98,7 +98,7 @@
 	    _react2.default.createElement(_reactRouter.Route, { path: '/u/:userId/browse', component: _Browse2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/u/:userId/about', component: _About2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/profile/:userId', component: _Profile2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/u/:userId/user', component: _User2.default })
+	    _react2.default.createElement(_reactRouter.Route, { path: '/user/:userId', component: _User2.default })
 	  ),
 	  _react2.default.createElement(_reactRouter.Route, { path: '/*', component: NoMatch })
 	), document.getElementById('app'));
@@ -46159,6 +46159,11 @@
 							),
 							_react2.default.createElement(
 								'div',
+								{ className: 'HomeProfileBio' },
+								this.props.user.bio
+							),
+							_react2.default.createElement(
+								'div',
 								{ className: 'CreatePostButton' },
 								_react2.default.createElement(
 									_reactBootstrap.Button,
@@ -46718,6 +46723,11 @@
 	              this.state.user.firstname,
 	              ' ',
 	              this.state.user.lastname
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'HomeProfileBio' },
+	              this.state.user.bio
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -46751,10 +46761,78 @@
 
 	exports.default = _react2.default.createClass({
 	  displayName: 'User',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      user: []
+	    };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this.loadSignedInUser();
+	  },
+
+	  loadSignedInUser: function loadSignedInUser() {
+	    var _this = this;
+
+	    fetch('/api/signedinuser/', { credentials: 'include' }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      _this.setState({ user: data });
+	    }).catch(function (err) {
+	      console.log(err);
+	    });
+	  },
+
+	  onChangeUpdateUserFirstname: function onChangeUpdateUserFirstname(e) {
+	    this.state.user.firstname = e.target.value;
+	    this.forceUpdate();
+	  },
+
+	  onChangeUpdateUserLastname: function onChangeUpdateUserLastname(e) {
+	    this.state.user.lastname = e.target.value;
+	    this.forceUpdate();
+	  },
+
+	  onChangeUpdateUserEmail: function onChangeUpdateUserEmail(e) {
+	    this.state.user.email = e.target.value;
+	    this.forceUpdate();
+	  },
+
+	  onChangeUpdateUserBio: function onChangeUpdateUserBio(e) {
+	    this.state.user.bio = e.target.value;
+	    this.forceUpdate();
+	  },
+
+	  handleUserUpdateSubmit: function handleUserUpdateSubmit(e) {
+	    e.preventDefault();
+	    var form = document.forms.userUpdateForm;
+	    this.updateUser({ firstname: form.firstname.value, lastname: form.lastname.value, email: form.email.value, imageurl: this.state.user.imageurl, bio: form.bio.value });
+	    location.reload(false);
+	  },
+
+	  updateUser: function updateUser(user) {
+	    var _this2 = this;
+
+	    console.log("In updateUser");
+	    fetch('/api/users', {
+	      method: 'PUT',
+	      headers: { 'Content-Type': 'application/json' },
+	      credentials: 'include',
+	      body: JSON.stringify(user)
+	    }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      _this2.setState({ user: data });
+	    }).catch(function (err) {
+	      console.log('Error updating User', err);
+	    });
+	  },
+
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
-	      null,
+	      { className: 'UserUpdate' },
 	      _react2.default.createElement(
 	        _reactBootstrap.Grid,
 	        null,
@@ -46763,11 +46841,77 @@
 	          null,
 	          _react2.default.createElement(
 	            _reactBootstrap.Col,
-	            { md: 12 },
+	            { md: 4 },
+	            _react2.default.createElement('img', { className: 'HomeProfileImg', src: this.state.user.imageurl, alt: 'User picture', height: '60', width: '60' }),
 	            _react2.default.createElement(
-	              'p',
-	              null,
-	              'This is the User Edit page'
+	              'form',
+	              { name: 'userUpdateForm', className: 'userUpdateForm' },
+	              _react2.default.createElement(
+	                _reactBootstrap.FormGroup,
+	                { controlId: 'userUpdateFirstname' },
+	                _react2.default.createElement(
+	                  _reactBootstrap.ControlLabel,
+	                  null,
+	                  'Firstname:'
+	                ),
+	                _react2.default.createElement(_reactBootstrap.FormControl, {
+	                  placeholder: 'Firstname',
+	                  name: 'firstname',
+	                  value: this.state.user.firstname,
+	                  onChange: this.onChangeUpdateUserFirstname
+	                })
+	              ),
+	              _react2.default.createElement(
+	                _reactBootstrap.FormGroup,
+	                { controlId: 'userUpdateLastname' },
+	                _react2.default.createElement(
+	                  _reactBootstrap.ControlLabel,
+	                  null,
+	                  'Lastname:'
+	                ),
+	                _react2.default.createElement(_reactBootstrap.FormControl, {
+	                  placeholder: 'Lastname',
+	                  name: 'lastname',
+	                  value: this.state.user.lastname,
+	                  onChange: this.onChangeUpdateUserLastname
+	                })
+	              ),
+	              _react2.default.createElement(
+	                _reactBootstrap.FormGroup,
+	                { controlId: 'userUpdateEmail' },
+	                _react2.default.createElement(
+	                  _reactBootstrap.ControlLabel,
+	                  null,
+	                  'Email:'
+	                ),
+	                _react2.default.createElement(_reactBootstrap.FormControl, {
+	                  placeholder: 'Email',
+	                  name: 'email',
+	                  value: this.state.user.email,
+	                  onChange: this.onChangeUpdateUserEmail
+	                })
+	              ),
+	              _react2.default.createElement(
+	                _reactBootstrap.FormGroup,
+	                { controlId: 'userUpdateBio' },
+	                _react2.default.createElement(
+	                  _reactBootstrap.ControlLabel,
+	                  null,
+	                  'Bio:'
+	                ),
+	                _react2.default.createElement(_reactBootstrap.FormControl, {
+	                  componentClass: 'textarea',
+	                  placeholder: 'Bio',
+	                  name: 'bio',
+	                  value: this.state.user.bio,
+	                  onChange: this.onChangeUpdateUserBio
+	                })
+	              ),
+	              _react2.default.createElement(
+	                _reactBootstrap.Button,
+	                { bsStyle: 'success', type: 'submit', onClick: this.handleUserUpdateSubmit },
+	                'Update Profile'
+	              )
 	            )
 	          )
 	        )

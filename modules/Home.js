@@ -170,6 +170,7 @@ export default React.createClass({
 						<Col md={3}>
 							<img className="HomeProfileImg" src={this.props.user.imageurl} alt="User picture" height="60" width="60" />
 							<span className="HomeProfileName"> {this.props.user.firstname} {this.props.user.lastname}</span> 
+							<div className="HomeProfileBio">{this.props.user.bio}</div>
 							<div className="CreatePostButton">
 								<Button bsStyle="primary" onClick={this.open}>Create Post</Button>
 							</div>
