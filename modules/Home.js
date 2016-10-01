@@ -1,34 +1,7 @@
 import React from 'react';
 import { Grid, Row, Col, Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 
-//global array for all of the posts
-// var allPosts;
-
-var Post = React.createClass({
-	handleDelete: function(e) {
-		e.preventDefault();
-		this.props.deletePost(this.props.id);
-	},
-
-	render: function() {
-		return (
-			<div className="PostBox">
-				<div className="PostTitle">
-					{this.props.title}
-				</div>
-				<div className="PostDate">
-					{this.props.timecreated}
-				</div>
-				<div className="PostDelete">
-					<Button onClick={this.handleDelete}>x</Button>
-				</div>
-				<div className="PostBody">
-					{this.props.body}
-				</div>
-			</div>
-		);
-	}
-});
+import Post from './Post'
 
 var PostList = React.createClass({
 	render: function() {
@@ -50,16 +23,16 @@ export default React.createClass({
 	getInitialState: function() {
 		return { 
 			posts: [],
-			showModal: false
+			showCreatePostModal: false
 		};
 	},
 
-	close: function() {
-    this.setState({ showModal: false });
+	closeCreatePostModal: function() {
+    this.setState({ showCreatePostModal: false });
   },
 
-  open: function() {
-    this.setState({ showModal: true });
+  openCreatePostModal: function() {
+    this.setState({ showCreatePostModal: true });
   },
 
 	componentDidMount: function() {
@@ -122,7 +95,7 @@ export default React.createClass({
 		this.setState({ title: '' });
 		this.setState({ body: '' });
 		//close modal
-		this.close();
+		this.closeCreatePostModal();
 	},
 
 	createPost: function(post) {
@@ -172,7 +145,7 @@ export default React.createClass({
 							<span className="HomeProfileName"> {this.props.user.firstname} {this.props.user.lastname}</span> 
 							<div className="HomeProfileBio">{this.props.user.bio}</div>
 							<div className="CreatePostButton">
-								<Button bsStyle="primary" onClick={this.open}>Create Post</Button>
+								<Button bsStyle="primary" onClick={this.openCreatePostModal}>Create Post</Button>
 							</div>
 						</Col>
 						<Col md={8}>
@@ -181,7 +154,7 @@ export default React.createClass({
 					</Row>
 				</Grid>
 
-				<Modal show={this.state.showModal} onHide={this.close}>
+				<Modal show={this.state.showCreatePostModal} onHide={this.closeCreatePostModal}>
 					<Modal.Header closeButton>
 						<Modal.Title>Create Post</Modal.Title>
 					</Modal.Header>

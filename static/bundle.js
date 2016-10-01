@@ -45951,50 +45951,11 @@
 
 	var _reactBootstrap = __webpack_require__(236);
 
+	var _Post = __webpack_require__(495);
+
+	var _Post2 = _interopRequireDefault(_Post);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	//global array for all of the posts
-	// var allPosts;
-
-	var Post = _react2.default.createClass({
-		displayName: 'Post',
-
-		handleDelete: function handleDelete(e) {
-			e.preventDefault();
-			this.props.deletePost(this.props.id);
-		},
-
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				{ className: 'PostBox' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'PostTitle' },
-					this.props.title
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'PostDate' },
-					this.props.timecreated
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'PostDelete' },
-					_react2.default.createElement(
-						_reactBootstrap.Button,
-						{ onClick: this.handleDelete },
-						'x'
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'PostBody' },
-					this.props.body
-				)
-			);
-		}
-	});
 
 	var PostList = _react2.default.createClass({
 		displayName: 'PostList',
@@ -46002,7 +45963,7 @@
 		render: function render() {
 			var deletePost = this.props.deletePost;
 			var postNodes = this.props.data.map(function (post) {
-				return _react2.default.createElement(Post, { key: post._id, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
+				return _react2.default.createElement(_Post2.default, { key: post._id, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
 			});
 			return _react2.default.createElement(
 				'div',
@@ -46018,16 +45979,16 @@
 		getInitialState: function getInitialState() {
 			return {
 				posts: [],
-				showModal: false
+				showCreatePostModal: false
 			};
 		},
 
-		close: function close() {
-			this.setState({ showModal: false });
+		closeCreatePostModal: function closeCreatePostModal() {
+			this.setState({ showCreatePostModal: false });
 		},
 
-		open: function open() {
-			this.setState({ showModal: true });
+		openCreatePostModal: function openCreatePostModal() {
+			this.setState({ showCreatePostModal: true });
 		},
 
 		componentDidMount: function componentDidMount() {
@@ -46092,7 +46053,7 @@
 			this.setState({ title: '' });
 			this.setState({ body: '' });
 			//close modal
-			this.close();
+			this.closeCreatePostModal();
 		},
 
 		createPost: function createPost(post) {
@@ -46167,7 +46128,7 @@
 								{ className: 'CreatePostButton' },
 								_react2.default.createElement(
 									_reactBootstrap.Button,
-									{ bsStyle: 'primary', onClick: this.open },
+									{ bsStyle: 'primary', onClick: this.openCreatePostModal },
 									'Create Post'
 								)
 							)
@@ -46181,7 +46142,7 @@
 				),
 				_react2.default.createElement(
 					_reactBootstrap.Modal,
-					{ show: this.state.showModal, onHide: this.close },
+					{ show: this.state.showCreatePostModal, onHide: this.closeCreatePostModal },
 					_react2.default.createElement(
 						_reactBootstrap.Modal.Header,
 						{ closeButton: true },
@@ -46918,6 +46879,142 @@
 	      )
 	    );
 	  }
+	});
+
+/***/ },
+/* 494 */,
+/* 495 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(236);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+		displayName: 'Post',
+
+		getInitialState: function getInitialState() {
+			return {
+				showUpdatePostModal: false
+			};
+		},
+
+		closeUpdatePostModal: function closeUpdatePostModal() {
+			this.setState({ showUpdatePostModal: false });
+		},
+
+		openUpdatePostModal: function openUpdatePostModal() {
+			this.setState({ showUpdatePostModal: true });
+		},
+
+		handleDelete: function handleDelete(e) {
+			e.preventDefault();
+			this.props.deletePost(this.props.id);
+		},
+
+		handleUpdatePostSubmit: function handleUpdatePostSubmit(e) {
+			e.preventDefault();
+			console.log("In handleUpdatePostSubmit");
+		},
+
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'PostBox' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostTitle' },
+						this.props.title
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostDate' },
+						this.props.timecreated
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostDelete' },
+						_react2.default.createElement(
+							_reactBootstrap.Button,
+							{ onClick: this.handleDelete },
+							'x'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostUpdate' },
+						_react2.default.createElement(
+							_reactBootstrap.Button,
+							{ onClick: this.openUpdatePostModal },
+							'u'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostBody' },
+						this.props.body
+					)
+				),
+				_react2.default.createElement(
+					_reactBootstrap.Modal,
+					{ show: this.state.showUpdatePostModal, onHide: this.closeUpdatePostModal },
+					_react2.default.createElement(
+						_reactBootstrap.Modal.Header,
+						{ closeButton: true },
+						_react2.default.createElement(
+							_reactBootstrap.Modal.Title,
+							null,
+							'Update Post'
+						)
+					),
+					_react2.default.createElement(
+						_reactBootstrap.Modal.Body,
+						null,
+						_react2.default.createElement(
+							'form',
+							{ name: 'createPostForm' },
+							_react2.default.createElement(
+								_reactBootstrap.FormGroup,
+								{ controlId: 'CreatePostTitle' },
+								_react2.default.createElement(_reactBootstrap.FormControl, {
+									placeholder: 'Title',
+									name: 'title',
+									value: this.props.title
+								})
+							),
+							_react2.default.createElement(
+								_reactBootstrap.FormGroup,
+								{ controlId: 'CreatePostTextarea' },
+								_react2.default.createElement(_reactBootstrap.FormControl, {
+									componentClass: 'textarea',
+									placeholder: 'Write your post here',
+									name: 'body',
+									value: this.props.body
+								})
+							),
+							_react2.default.createElement(
+								_reactBootstrap.Button,
+								{ bsStyle: 'warning', type: 'submit', onClick: this.handleUpdatePostSubmit },
+								'Update'
+							)
+						)
+					)
+				)
+			);
+		}
 	});
 
 /***/ }

@@ -52,10 +52,12 @@
 	display:inline-block
 }
 
+.PostUpdate {
+	float: right;
+}
+
 .PostDelete {
-	font-size: 100%;	
-	text-align: right;
-	margin-top: -35px;
+	float:right;
 }
 
 .card {
