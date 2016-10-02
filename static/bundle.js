@@ -45962,8 +45962,9 @@
 
 		render: function render() {
 			var deletePost = this.props.deletePost;
+			var updatePost = this.props.updatePost;
 			var postNodes = this.props.data.map(function (post) {
-				return _react2.default.createElement(_Post2.default, { key: post._id, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
+				return _react2.default.createElement(_Post2.default, { key: post._id, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
 			});
 			return _react2.default.createElement(
 				'div',
@@ -46096,6 +46097,30 @@
 			}
 		},
 
+		updatePost: function updatePost(id, post) {
+			var _this3 = this;
+
+			fetch('/api/posts/' + id, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+				body: JSON.stringify(post)
+			}).then(function (response) {
+				return response.json();
+			}).then(function (data) {
+				//find specific post with id in this.state.posts and update it with data
+				function findUpdatingPost(p) {
+					return p._id == id;;
+				}
+				var postsArray = _this3.state.posts;
+				var indexToUpdate = _this3.state.posts.findIndex(findUpdatingPost);
+				postsArray[indexToUpdate] = data;
+				_this3.setState({ posts: postsArray });
+			}).catch(function (err) {
+				console.log('Error updating Post', err);
+			});
+		},
+
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -46136,7 +46161,7 @@
 						_react2.default.createElement(
 							_reactBootstrap.Col,
 							{ md: 8 },
-							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost })
+							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost })
 						)
 					)
 				),
@@ -46905,7 +46930,9 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				showUpdatePostModal: false
+				showUpdatePostModal: false,
+				title: this.props.title,
+				body: this.props.body
 			};
 		},
 
@@ -46917,6 +46944,14 @@
 			this.setState({ showUpdatePostModal: true });
 		},
 
+		onChangeUpdatePostTitle: function onChangeUpdatePostTitle(e) {
+			this.setState({ title: e.target.value });
+		},
+
+		onChangeUpdatePostBody: function onChangeUpdatePostBody(e) {
+			this.setState({ body: e.target.value });
+		},
+
 		handleDelete: function handleDelete(e) {
 			e.preventDefault();
 			this.props.deletePost(this.props.id);
@@ -46924,7 +46959,9 @@
 
 		handleUpdatePostSubmit: function handleUpdatePostSubmit(e) {
 			e.preventDefault();
-			console.log("In handleUpdatePostSubmit");
+			this.props.updatePost(this.props.id, { title: this.state.title, body: this.state.body, timecreated: this.props.timecreated });
+			//close modal
+			this.closeUpdatePostModal();
 		},
 
 		render: function render() {
@@ -46992,7 +47029,8 @@
 								_react2.default.createElement(_reactBootstrap.FormControl, {
 									placeholder: 'Title',
 									name: 'title',
-									value: this.props.title
+									value: this.state.title,
+									onChange: this.onChangeUpdatePostTitle
 								})
 							),
 							_react2.default.createElement(
@@ -47002,7 +47040,8 @@
 									componentClass: 'textarea',
 									placeholder: 'Write your post here',
 									name: 'body',
-									value: this.props.body
+									value: this.state.body,
+									onChange: this.onChangeUpdatePostBody
 								})
 							),
 							_react2.default.createElement(

@@ -4,7 +4,9 @@ import { Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 export default React.createClass({
 	getInitialState: function() {
 		return { 
-			showUpdatePostModal: false
+			showUpdatePostModal: false,
+			title: this.props.title,
+			body: this.props.body
 		};
 	},
 
@@ -16,6 +18,14 @@ export default React.createClass({
     this.setState({ showUpdatePostModal: true });
   },
 
+  onChangeUpdatePostTitle: function(e) {
+		this.setState({ title: e.target.value });
+	},
+
+	onChangeUpdatePostBody: function(e) {
+		this.setState({ body: e.target.value });
+	},
+
 	handleDelete: function(e) {
 		e.preventDefault();
 		this.props.deletePost(this.props.id);
@@ -23,7 +33,9 @@ export default React.createClass({
 
 	handleUpdatePostSubmit: function(e) {
 		e.preventDefault();
-		console.log("In handleUpdatePostSubmit");
+		this.props.updatePost(this.props.id, {title: this.state.title, body: this.state.body, timecreated: this.props.timecreated});
+		//close modal
+		this.closeUpdatePostModal();
 	},
 
 	render: function() {
@@ -57,7 +69,8 @@ export default React.createClass({
 								<FormControl 
 									placeholder="Title"
 									name="title"
-									value={this.props.title}
+									value={this.state.title}
+									onChange={this.onChangeUpdatePostTitle}
 								>
 								</FormControl>
 							</FormGroup>
@@ -67,7 +80,8 @@ export default React.createClass({
 				          componentClass="textarea" 
 				          placeholder="Write your post here"
 				          name="body"
-				          value={this.props.body}
+				          value={this.state.body}
+				          onChange={this.onChangeUpdatePostBody}
 				        >
 				        </FormControl>
 							</FormGroup> 

@@ -6,9 +6,10 @@ import Post from './Post'
 var PostList = React.createClass({
 	render: function() {
 		var deletePost = this.props.deletePost;
+		var updatePost = this.props.updatePost;
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
+				<Post key={post._id} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
 			);
 		});
 		return (
@@ -135,6 +136,28 @@ export default React.createClass({
 		}
 	},
 
+	updatePost: function(id, post) {
+		fetch('/api/posts/'+id, {
+			method: 'PUT',
+			headers: {'Content-Type': 'application/json'},
+			credentials: 'include',
+			body: JSON.stringify(post)
+		}).then(response =>
+			response.json()
+		).then(data => {
+			//find specific post with id in this.state.posts and update it with data
+			function findUpdatingPost(p) {
+				return p._id == id;;
+			}
+			var postsArray = this.state.posts;
+			var indexToUpdate = this.state.posts.findIndex(findUpdatingPost)
+			postsArray[indexToUpdate] = data;
+			this.setState({ posts: postsArray });
+		}).catch(err => {
+      console.log('Error updating Post', err)
+    });
+	},
+
 	render: function() {
 		return (
 			<div>
@@ -149,7 +172,7 @@ export default React.createClass({
 							</div>
 						</Col>
 						<Col md={8}>
-							<PostList data={this.state.posts} deletePost={this.deletePost} />							
+							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost}/>							
 						</Col>
 					</Row>
 				</Grid>

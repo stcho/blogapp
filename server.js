@@ -197,6 +197,20 @@ app.delete('/api/posts/:id', function (req, res) {
 })
 
 /*
+PUT one Post
+*/
+app.put('/api/posts/:id', function (req, res) {
+	req.body.userId = req.session.userId;
+	db.collection('posts').updateOne({_id: ObjectId(req.params.id)}, req.body, function(err, result) {
+		if (err) console.log(err);
+		db.collection('posts').findOne({_id: ObjectId(req.params.id)}, function(err, post) {
+			if (err) console.log(err);
+			res.json(post);
+		});
+	})
+})
+
+/*
 User Component
 */
 app.get('/user/:id', function (req, res) {
