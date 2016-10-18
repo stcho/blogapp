@@ -27,7 +27,7 @@ export default React.createClass({
     var homePath = "/u/" + this.state.user._id;
     var browsePath = homePath + "/browse";
     var aboutPath = homePath + "/about";
-    var profilePath = '/profile/' + this.state.user._id;
+    var userPath = '/user/' + this.state.user._id;
     return (
       <div>
         <Navbar>
@@ -41,7 +41,7 @@ export default React.createClass({
 						<NavItem><Link to={aboutPath}>About</Link></NavItem>
 					</Nav>
 					<Nav pullRight>
-						<NavItem href={profilePath}><img className="HomeNavImg" src={this.state.user.imageurl} alt="User picture" height="25" width="25" /> {this.state.user.firstname}</NavItem>
+						<NavItem><Link to={userPath}><img className="HomeNavImg" src={this.state.user.imageurl} alt="User picture" height="25" width="25" /> {this.state.user.firstname}</Link></NavItem>
 					</Nav>
 				</Navbar>
         {this.props.children || <Home user={this.state.user}/>}

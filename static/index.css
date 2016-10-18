@@ -19,6 +19,7 @@
 
 .CreatePostButton {
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 #CreatePostTextarea {
@@ -46,7 +47,7 @@
 	margin: 10px;
 }
 
-.PostDate {
+.PostTimeCreated {
 	font-size: 85%;
 	margin-left: 10px;
 	display:inline-block
@@ -58,6 +59,29 @@
 
 .PostDelete {
 	float:right;
+}
+
+.CommentBox {
+	margin-left: 10px;
+}
+
+.CommentImg {
+	float: left;
+	border-radius: 5px;
+	margin-right: 7px;
+}
+
+.CommentTimeCreated {
+	font-size: 85%;
+	margin-bottom: 5px;
+}
+
+.CommentInput {
+	margin-top: 3px;
+	height: 26px;
+	width: 90%;
+	font-size: 85%;
+	padding-left: 5px;
 }
 
 .card {

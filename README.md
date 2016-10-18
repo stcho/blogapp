@@ -8,10 +8,10 @@ Complete blogging application made with React, Express, Node, MongoDB, Webpack, 
 * Google sign-in and authentication
 * User Profiles with corresponding Posts
 * User Creation
-* User Update
+* User Update/Edit
 * Post Creation
 * Post Deletion
-* Post Update
+* Post Update/Edit
 
 ####Setup
 ```
@@ -33,5 +33,4 @@ npm start
 Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
-Sign out
-Post Update
+Sign out, Comments, Nav-Bar Active State

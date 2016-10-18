@@ -236,7 +236,7 @@ app.get('/profile/:id', function (req, res) {
 		return
 	}
 	if(req.session.userId == req.params.id) {
-		res.redirect('/user/' + req.session.userId);
+		res.redirect('/u/' + req.session.userId);
 		return
 	}
   res.sendFile(path.join(__dirname, 'static', 'index.html'))

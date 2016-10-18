@@ -7,9 +7,10 @@ var PostList = React.createClass({
 	render: function() {
 		var deletePost = this.props.deletePost;
 		var updatePost = this.props.updatePost;
+		var uimageurl = this.props.uimageurl;
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
+				<Post key={post._id} uimageurl={uimageurl} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
 			);
 		});
 		return (
@@ -172,7 +173,7 @@ export default React.createClass({
 							</div>
 						</Col>
 						<Col md={8}>
-							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost}/>							
+							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost} uimageurl={this.props.user.imageurl}/>							
 						</Col>
 					</Row>
 				</Grid>

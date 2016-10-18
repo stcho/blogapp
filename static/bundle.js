@@ -58,23 +58,23 @@
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _About = __webpack_require__(488);
+	var _About = __webpack_require__(489);
 
 	var _About2 = _interopRequireDefault(_About);
 
-	var _Browse = __webpack_require__(489);
+	var _Browse = __webpack_require__(490);
 
 	var _Browse2 = _interopRequireDefault(_Browse);
 
-	var _Login = __webpack_require__(490);
+	var _Login = __webpack_require__(491);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	var _Profile = __webpack_require__(492);
+	var _Profile = __webpack_require__(493);
 
 	var _Profile2 = _interopRequireDefault(_Profile);
 
-	var _User = __webpack_require__(493);
+	var _User = __webpack_require__(494);
 
 	var _User2 = _interopRequireDefault(_User);
 
@@ -27177,7 +27177,7 @@
 			var homePath = "/u/" + this.state.user._id;
 			var browsePath = homePath + "/browse";
 			var aboutPath = homePath + "/about";
-			var profilePath = '/profile/' + this.state.user._id;
+			var userPath = '/user/' + this.state.user._id;
 			return _react2.default.createElement(
 				'div',
 				null,
@@ -27224,10 +27224,14 @@
 						{ pullRight: true },
 						_react2.default.createElement(
 							_reactBootstrap.NavItem,
-							{ href: profilePath },
-							_react2.default.createElement('img', { className: 'HomeNavImg', src: this.state.user.imageurl, alt: 'User picture', height: '25', width: '25' }),
-							' ',
-							this.state.user.firstname
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ to: userPath },
+								_react2.default.createElement('img', { className: 'HomeNavImg', src: this.state.user.imageurl, alt: 'User picture', height: '25', width: '25' }),
+								' ',
+								this.state.user.firstname
+							)
 						)
 					)
 				),
@@ -45951,7 +45955,7 @@
 
 	var _reactBootstrap = __webpack_require__(236);
 
-	var _Post = __webpack_require__(495);
+	var _Post = __webpack_require__(488);
 
 	var _Post2 = _interopRequireDefault(_Post);
 
@@ -45963,8 +45967,9 @@
 		render: function render() {
 			var deletePost = this.props.deletePost;
 			var updatePost = this.props.updatePost;
+			var uimageurl = this.props.uimageurl;
 			var postNodes = this.props.data.map(function (post) {
-				return _react2.default.createElement(_Post2.default, { key: post._id, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
+				return _react2.default.createElement(_Post2.default, { key: post._id, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
 			});
 			return _react2.default.createElement(
 				'div',
@@ -46161,7 +46166,7 @@
 						_react2.default.createElement(
 							_reactBootstrap.Col,
 							{ md: 8 },
-							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost })
+							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, uimageurl: this.props.user.imageurl })
 						)
 					)
 				),
@@ -46218,6 +46223,230 @@
 
 /***/ },
 /* 488 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(236);
+
+	var _reactRouter = __webpack_require__(172);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var exampleComments = [{
+		_id: "12345",
+		imageurl: "https://lh6.googleusercontent.com/-Y0zBjmrIdNs/AAAAAAAAAAI/AAAAAAAAAJ4/gm0iMV4MR8I/s96-c/photo.jpg",
+		body: "This is the first comment ever",
+		timecreated: "09/29/2016 5:13pm",
+		username: "Thomas Cho",
+		postid: "12345"
+	}, {
+		_id: "67890",
+		imageurl: "https://lh4.googleusercontent.com/-OKsjuVxYkbE/AAAAAAAAAAI/AAAAAAAAAAA/APaXHhSXahTOshE0to3I4G7QI3_aAA2MbQ/s96-c/photo.jpg",
+		body: "This is the second comment ever",
+		timecreated: "09/29/2016 5:13pm",
+		username: "Sungjae Cho",
+		postid: "67890"
+	}];
+
+	var Comment = _react2.default.createClass({
+		displayName: 'Comment',
+
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement('img', { className: 'CommentImg', src: this.props.imageurl, alt: 'Commenter picture', height: '30', width: '30' }),
+				_react2.default.createElement(
+					'div',
+					{ className: 'CommentBody' },
+					_react2.default.createElement(
+						_reactRouter.Link,
+						null,
+						this.props.username
+					),
+					' ',
+					this.props.body
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'CommentTimeCreated' },
+					this.props.timecreated
+				)
+			);
+		}
+	});
+
+	var CommentList = _react2.default.createClass({
+		displayName: 'CommentList',
+
+		handleCommentSubmit: function handleCommentSubmit(e) {
+			e.preventDefault();
+			console.log("Submit");
+			//if comment is not null create comment
+		},
+
+		render: function render() {
+			var commentNodes = this.props.data.map(function (comment) {
+				return _react2.default.createElement(Comment, { key: comment._id, id: comment._id, imageurl: comment.imageurl, username: comment.username, body: comment.body, timecreated: comment.timecreated });
+			});
+			return _react2.default.createElement(
+				'div',
+				{ className: 'CommentBox' },
+				_react2.default.createElement('hr', null),
+				commentNodes,
+				_react2.default.createElement('img', { className: 'CommentImg', src: this.props.uimageurl, alt: 'Commenter picture', height: '30', width: '30' }),
+				_react2.default.createElement(
+					'form',
+					{ name: 'createCommentForm', onSubmit: this.handleCommentSubmit },
+					_react2.default.createElement('input', { className: 'CommentInput', type: 'text', placeholder: 'Write a comment...' })
+				)
+			);
+		}
+	});
+
+	exports.default = _react2.default.createClass({
+		displayName: 'Post',
+
+		getInitialState: function getInitialState() {
+			return {
+				showUpdatePostModal: false,
+				title: this.props.title,
+				body: this.props.body
+			};
+		},
+
+		closeUpdatePostModal: function closeUpdatePostModal() {
+			this.setState({ showUpdatePostModal: false });
+		},
+
+		openUpdatePostModal: function openUpdatePostModal() {
+			this.setState({ showUpdatePostModal: true });
+		},
+
+		onChangeUpdatePostTitle: function onChangeUpdatePostTitle(e) {
+			this.setState({ title: e.target.value });
+		},
+
+		onChangeUpdatePostBody: function onChangeUpdatePostBody(e) {
+			this.setState({ body: e.target.value });
+		},
+
+		handleDelete: function handleDelete(e) {
+			e.preventDefault();
+			this.props.deletePost(this.props.id);
+		},
+
+		handleUpdatePostSubmit: function handleUpdatePostSubmit(e) {
+			e.preventDefault();
+			this.props.updatePost(this.props.id, { title: this.state.title, body: this.state.body, timecreated: this.props.timecreated });
+			//close modal
+			this.closeUpdatePostModal();
+		},
+
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'PostBox' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostTitle' },
+						this.props.title
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostTimeCreated' },
+						this.props.timecreated
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostDelete' },
+						_react2.default.createElement(
+							_reactBootstrap.Button,
+							{ onClick: this.handleDelete },
+							'x'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostUpdate' },
+						_react2.default.createElement(
+							_reactBootstrap.Button,
+							{ onClick: this.openUpdatePostModal },
+							'u'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'PostBody' },
+						this.props.body
+					),
+					_react2.default.createElement(CommentList, { data: exampleComments, uimageurl: this.props.uimageurl })
+				),
+				_react2.default.createElement(
+					_reactBootstrap.Modal,
+					{ show: this.state.showUpdatePostModal, onHide: this.closeUpdatePostModal },
+					_react2.default.createElement(
+						_reactBootstrap.Modal.Header,
+						{ closeButton: true },
+						_react2.default.createElement(
+							_reactBootstrap.Modal.Title,
+							null,
+							'Update Post'
+						)
+					),
+					_react2.default.createElement(
+						_reactBootstrap.Modal.Body,
+						null,
+						_react2.default.createElement(
+							'form',
+							{ name: 'createPostForm' },
+							_react2.default.createElement(
+								_reactBootstrap.FormGroup,
+								{ controlId: 'CreatePostTitle' },
+								_react2.default.createElement(_reactBootstrap.FormControl, {
+									placeholder: 'Title',
+									name: 'title',
+									value: this.state.title,
+									onChange: this.onChangeUpdatePostTitle
+								})
+							),
+							_react2.default.createElement(
+								_reactBootstrap.FormGroup,
+								{ controlId: 'CreatePostTextarea' },
+								_react2.default.createElement(_reactBootstrap.FormControl, {
+									componentClass: 'textarea',
+									placeholder: 'Write your post here',
+									name: 'body',
+									value: this.state.body,
+									onChange: this.onChangeUpdatePostBody
+								})
+							),
+							_react2.default.createElement(
+								_reactBootstrap.Button,
+								{ bsStyle: 'warning', type: 'submit', onClick: this.handleUpdatePostSubmit },
+								'Update'
+							)
+						)
+					)
+				)
+			);
+		}
+	});
+
+/***/ },
+/* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46292,7 +46521,7 @@
 	});
 
 /***/ },
-/* 489 */
+/* 490 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46401,7 +46630,7 @@
 	});
 
 /***/ },
-/* 490 */
+/* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46416,7 +46645,7 @@
 
 	var _reactRouter = __webpack_require__(172);
 
-	var _reactGoogleLogin = __webpack_require__(491);
+	var _reactGoogleLogin = __webpack_require__(492);
 
 	var _reactGoogleLogin2 = _interopRequireDefault(_reactGoogleLogin);
 
@@ -46578,14 +46807,14 @@
 	});
 
 /***/ },
-/* 491 */
+/* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
 	!function(e,t){ true?module.exports=t(__webpack_require__(1)):"function"==typeof define&&define.amd?define(["react"],t):"object"==typeof exports?exports.GoogleLogin=t(require("react")):e.GoogleLogin=t(e.react)}(this,function(e){return function(e){function t(n){if(o[n])return o[n].exports;var i=o[n]={exports:{},id:n,loaded:!1};return e[n].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){e.exports=o(2)},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function i(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function r(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var a=function(){function e(e,t){for(var o=0;o<t.length;o++){var n=t[o];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,o,n){return o&&e(t.prototype,o),n&&e(t,n),t}}(),c=o(3),l=n(c),u=function(e){function t(e){i(this,t);var o=r(this,Object.getPrototypeOf(t).call(this,e));return o.onBtnClick=o.onBtnClick.bind(o),o.state={disabled:"disabled"},o}return s(t,e),a(t,[{key:"componentDidMount",value:function(){var e=this,t=this.props,o=t.clientId,n=t.scope,i=t.cookiePolicy,r=t.loginHint,s=t.hostedDomain;!function(e,t,o,n){var i=e.getElementsByTagName(t)[0],r=i,s=i;s=e.createElement(t),s.id=o,s.src="//apis.google.com/js/client:platform.js",r.parentNode.insertBefore(s,r),s.onload=n}(document,"script","google-login",function(){var t={client_id:o,cookiepolicy:i,login_hint:r,hosted_domain:s,scope:n};window.gapi.load("auth2",function(){e.setState({disabled:""}),window.gapi.auth2.getAuthInstance()||window.gapi.auth2.init(t)})})}},{key:"onBtnClick",value:function(){var e=window.gapi.auth2.getAuthInstance(),t=this.props,o=t.offline,n=t.redirectUri,i=t.onSuccess,r=t.onFailure;if(o){var s={redirect_uri:n};e.grantOfflineAccess(s).then(function(e){i(e)},function(e){r(e)})}else e.signIn().then(function(e){var t=e.getBasicProfile(),o=e.getAuthResponse();e.googleId=t.getId(),e.tokenObj=o,e.tokenId=o.id_token,e.accessToken=o.access_token,e.profileObj={googleId:t.getId(),imageUrl:t.getImageUrl(),email:t.getEmail(),name:t.getName(),givenName:t.getGivenName(),familyName:t.getFamilyName()},i(e)},function(e){r(e)})}},{key:"render",value:function(){var e={display:"inline-block",background:"#d14836",color:"#fff",width:190,paddingTop:10,paddingBottom:10,borderRadius:2,border:"1px solid transparent",fontSize:16,fontWeight:"bold",fontFamily:"Roboto"},t=this.props,o=t.className,n=t.buttonText,i=t.children;return l["default"].createElement("button",{className:o,onClick:this.onBtnClick,style:o?{}:e,disabled:this.state.disabled},i?i:n)}}]),t}(c.Component);u.propTypes={onSuccess:c.PropTypes.func.isRequired,onFailure:c.PropTypes.func.isRequired,clientId:c.PropTypes.string.isRequired,buttonText:c.PropTypes.string,offline:c.PropTypes.bool,scope:c.PropTypes.string,className:c.PropTypes.string,redirectUri:c.PropTypes.string,cookiePolicy:c.PropTypes.string,loginHint:c.PropTypes.string,hostedDomain:c.PropTypes.string,children:l["default"].PropTypes.node},u.defaultProps={buttonText:"Login with Google",scope:"profile email",redirectUri:"postmessage",cookiePolicy:"single_host_origin"},t["default"]=u},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(t,"__esModule",{value:!0});var i=o(1),r=n(i);t["default"]=r["default"]},function(t,o){t.exports=e}])});
 	//# sourceMappingURL=google-login.js.map
 
 /***/ },
-/* 492 */
+/* 493 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46621,7 +46850,7 @@
 	      ),
 	      _react2.default.createElement(
 	        'div',
-	        { className: 'PostDate' },
+	        { className: 'PostTimeCreated' },
 	        this.props.timecreated
 	      ),
 	      _react2.default.createElement(
@@ -46728,7 +46957,7 @@
 	});
 
 /***/ },
-/* 493 */
+/* 494 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46904,156 +47133,6 @@
 	      )
 	    );
 	  }
-	});
-
-/***/ },
-/* 494 */,
-/* 495 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactBootstrap = __webpack_require__(236);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _react2.default.createClass({
-		displayName: 'Post',
-
-		getInitialState: function getInitialState() {
-			return {
-				showUpdatePostModal: false,
-				title: this.props.title,
-				body: this.props.body
-			};
-		},
-
-		closeUpdatePostModal: function closeUpdatePostModal() {
-			this.setState({ showUpdatePostModal: false });
-		},
-
-		openUpdatePostModal: function openUpdatePostModal() {
-			this.setState({ showUpdatePostModal: true });
-		},
-
-		onChangeUpdatePostTitle: function onChangeUpdatePostTitle(e) {
-			this.setState({ title: e.target.value });
-		},
-
-		onChangeUpdatePostBody: function onChangeUpdatePostBody(e) {
-			this.setState({ body: e.target.value });
-		},
-
-		handleDelete: function handleDelete(e) {
-			e.preventDefault();
-			this.props.deletePost(this.props.id);
-		},
-
-		handleUpdatePostSubmit: function handleUpdatePostSubmit(e) {
-			e.preventDefault();
-			this.props.updatePost(this.props.id, { title: this.state.title, body: this.state.body, timecreated: this.props.timecreated });
-			//close modal
-			this.closeUpdatePostModal();
-		},
-
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'PostBox' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'PostTitle' },
-						this.props.title
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'PostDate' },
-						this.props.timecreated
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'PostDelete' },
-						_react2.default.createElement(
-							_reactBootstrap.Button,
-							{ onClick: this.handleDelete },
-							'x'
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'PostUpdate' },
-						_react2.default.createElement(
-							_reactBootstrap.Button,
-							{ onClick: this.openUpdatePostModal },
-							'u'
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'PostBody' },
-						this.props.body
-					)
-				),
-				_react2.default.createElement(
-					_reactBootstrap.Modal,
-					{ show: this.state.showUpdatePostModal, onHide: this.closeUpdatePostModal },
-					_react2.default.createElement(
-						_reactBootstrap.Modal.Header,
-						{ closeButton: true },
-						_react2.default.createElement(
-							_reactBootstrap.Modal.Title,
-							null,
-							'Update Post'
-						)
-					),
-					_react2.default.createElement(
-						_reactBootstrap.Modal.Body,
-						null,
-						_react2.default.createElement(
-							'form',
-							{ name: 'createPostForm' },
-							_react2.default.createElement(
-								_reactBootstrap.FormGroup,
-								{ controlId: 'CreatePostTitle' },
-								_react2.default.createElement(_reactBootstrap.FormControl, {
-									placeholder: 'Title',
-									name: 'title',
-									value: this.state.title,
-									onChange: this.onChangeUpdatePostTitle
-								})
-							),
-							_react2.default.createElement(
-								_reactBootstrap.FormGroup,
-								{ controlId: 'CreatePostTextarea' },
-								_react2.default.createElement(_reactBootstrap.FormControl, {
-									componentClass: 'textarea',
-									placeholder: 'Write your post here',
-									name: 'body',
-									value: this.state.body,
-									onChange: this.onChangeUpdatePostBody
-								})
-							),
-							_react2.default.createElement(
-								_reactBootstrap.Button,
-								{ bsStyle: 'warning', type: 'submit', onClick: this.handleUpdatePostSubmit },
-								'Update'
-							)
-						)
-					)
-				)
-			);
-		}
 	});
 
 /***/ }

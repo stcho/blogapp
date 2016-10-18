@@ -13,7 +13,7 @@ var Post = React.createClass({
         <div className="PostTitle">
           {this.props.title}
         </div>
-        <div className="PostDate">
+        <div className="PostTimeCreated">
           {this.props.timecreated}
         </div>
         <div className="PostBody">
