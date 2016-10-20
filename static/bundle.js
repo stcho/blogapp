@@ -46243,22 +46243,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var exampleComments = [{
-		_id: "12345",
-		imageurl: "https://lh6.googleusercontent.com/-Y0zBjmrIdNs/AAAAAAAAAAI/AAAAAAAAAJ4/gm0iMV4MR8I/s96-c/photo.jpg",
-		body: "This is the first comment ever",
-		timecreated: "09/29/2016 5:13pm",
-		username: "Thomas Cho",
-		postid: "12345"
-	}, {
-		_id: "67890",
-		imageurl: "https://lh4.googleusercontent.com/-OKsjuVxYkbE/AAAAAAAAAAI/AAAAAAAAAAA/APaXHhSXahTOshE0to3I4G7QI3_aAA2MbQ/s96-c/photo.jpg",
-		body: "This is the second comment ever",
-		timecreated: "09/29/2016 5:13pm",
-		username: "Sungjae Cho",
-		postid: "67890"
-	}];
-
 	var Comment = _react2.default.createClass({
 		displayName: 'Comment',
 
@@ -46301,32 +46285,12 @@
 			var newDate = new Date();
 			//if comment is not null create comment
 			if (this.state.body != "") {
-				this.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username });
+				this.props.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username });
 				this.setState({ body: "" }, function () {
-					// clear comment
-					// console.log(document.getElementsByClassName("CommentInput"));
+					// clear comment input value
+					document.getElementById("CommentInput").value = "";
 				});
 			}
-		},
-
-		createComment: function createComment(comment) {
-			var _this = this;
-
-			console.log(comment);
-			fetch('/api/comments', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				credentials: 'include',
-				body: JSON.stringify(comment)
-			}).then(function (response) {
-				return response.json();
-			}).then(function (data) {
-				var dataArray = [data];
-				var modifiedComments = dataArray.concat(_this.state.comments);
-				_this.setState({ comments: modifiedComments });
-			}).catch(function (err) {
-				console.log('Error creating comment', err);
-			});
 		},
 
 		onChangeComment: function onChangeComment(e) {
@@ -46346,7 +46310,7 @@
 				_react2.default.createElement(
 					'form',
 					{ name: 'createCommentForm', onSubmit: this.handleCommentSubmit },
-					_react2.default.createElement('input', { className: 'CommentInput', type: 'text', placeholder: 'Write a comment...', onChange: this.onChangeComment })
+					_react2.default.createElement('input', { id: 'CommentInput', type: 'text', placeholder: 'Write a comment...', onChange: this.onChangeComment })
 				)
 			);
 		}
@@ -46369,13 +46333,13 @@
 		},
 
 		loadComments: function loadComments() {
-			var _this2 = this;
+			var _this = this;
 
 			fetch('/api/comments/' + this.props.id, { credentials: 'include' }).then(function (response) {
 				return response.json();
 			}).then(function (data) {
 				// var flipData = data.reverse()
-				_this2.setState({ comments: data });
+				_this.setState({ comments: data });
 			}).catch(function (err) {
 				console.log(err);
 			});
@@ -46407,6 +46371,25 @@
 			this.props.updatePost(this.props.id, { title: this.state.title, body: this.state.body, timecreated: this.props.timecreated, username: this.props.username });
 			//close modal
 			this.closeUpdatePostModal();
+		},
+
+		createComment: function createComment(comment) {
+			var _this2 = this;
+
+			fetch('/api/comments', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+				body: JSON.stringify(comment)
+			}).then(function (response) {
+				return response.json();
+			}).then(function (data) {
+				var dataArray = [data];
+				var modifiedComments = dataArray.concat(_this2.state.comments);
+				_this2.setState({ comments: modifiedComments });
+			}).catch(function (err) {
+				console.log('Error creating comment', err);
+			});
 		},
 
 		render: function render() {
@@ -46449,7 +46432,7 @@
 						{ className: 'PostBody' },
 						this.props.body
 					),
-					_react2.default.createElement(CommentList, { data: this.state.comments, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
+					_react2.default.createElement(CommentList, { data: this.state.comments, createComment: this.createComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
 				),
 				_react2.default.createElement(
 					_reactBootstrap.Modal,

@@ -12,6 +12,7 @@ Complete blogging application made with React, Express, Node, MongoDB, Webpack, 
 * Post Creation
 * Post Deletion
 * Post Update/Edit
+* Comment Creation
 
 ####Setup
 ```
@@ -33,4 +34,4 @@ npm start
 Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
-Sign out, Comments, Nav-Bar Active State
+When deleting post delete its comments as well, Sign out, Nav-Bar Active State

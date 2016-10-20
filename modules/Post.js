@@ -2,24 +2,6 @@ import React from 'react';
 import { Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router'
 
-var exampleComments = [
-{
-	_id: "12345", 
-	imageurl: "https://lh6.googleusercontent.com/-Y0zBjmrIdNs/AAAAAAAAAAI/AAAAAAAAAJ4/gm0iMV4MR8I/s96-c/photo.jpg",
-	body: "This is the first comment ever",
-	timecreated: "09/29/2016 5:13pm",
-	username: "Thomas Cho",
-	postid: "12345" 
-},
-{
-	_id: "67890", 
-	imageurl: "https://lh4.googleusercontent.com/-OKsjuVxYkbE/AAAAAAAAAAI/AAAAAAAAAAA/APaXHhSXahTOshE0to3I4G7QI3_aAA2MbQ/s96-c/photo.jpg",
-	body: "This is the second comment ever",
-	timecreated: "09/29/2016 5:13pm",
-	username: "Sungjae Cho",
-	postid: "67890"
-}
-];
 
 var Comment = React.createClass({
 	render: function() {
@@ -50,30 +32,12 @@ var CommentList = React.createClass({
 		var newDate = new Date();
 		//if comment is not null create comment
 		if(this.state.body != "") {
-			this.createComment({imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username})
+			this.props.createComment({imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username})
 			this.setState({ body: "" }, function () {
-			    // clear comment
-			    // console.log(document.getElementsByClassName("CommentInput"));
+			    // clear comment input value
+			    document.getElementById("CommentInput").value = "";
 			});
 		}
-	},
-
-	createComment: function(comment) {
-		console.log(comment);
-		fetch('/api/comments', {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			credentials: 'include',
-			body: JSON.stringify(comment)
-		}).then(response => 
-			response.json()
-		).then(data => {	
-			var dataArray = [data];
-			var modifiedComments = dataArray.concat(this.state.comments);
-			this.setState({ comments: modifiedComments });
-		}).catch(err => {
-			console.log('Error creating comment', err)
-		});
 	},
 
 	onChangeComment: function(e) {
@@ -92,7 +56,7 @@ var CommentList = React.createClass({
 				{commentNodes}
 				<img className="CommentImg" src={this.props.uimageurl} alt="Commenter picture" height="30" width="30" />
 				<form name="createCommentForm" onSubmit={this.handleCommentSubmit}>
-					<input className="CommentInput" type="text" placeholder="Write a comment..." onChange={this.onChangeComment}/>
+					<input id="CommentInput" type="text" placeholder="Write a comment..." onChange={this.onChangeComment}/>
 				</form>
 			</div>
 		);
@@ -153,6 +117,23 @@ export default React.createClass({
 		this.closeUpdatePostModal();
 	},
 
+	createComment: function(comment) {
+		fetch('/api/comments', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			credentials: 'include',
+			body: JSON.stringify(comment)
+		}).then(response => 
+			response.json()
+		).then(data => {	
+			var dataArray = [data];
+			var modifiedComments = dataArray.concat(this.state.comments);
+			this.setState({ comments: modifiedComments });
+		}).catch(err => {
+			console.log('Error creating comment', err)
+		});
+	},
+
 	render: function() {
 		return (
 			<div>
@@ -172,7 +153,7 @@ export default React.createClass({
 					<div className="PostBody">
 						{this.props.body}
 					</div>
-					<CommentList data={this.state.comments} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
+					<CommentList data={this.state.comments} createComment={this.createComment} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
 				</div>
 
 				<Modal show={this.state.showUpdatePostModal} onHide={this.closeUpdatePostModal}>
