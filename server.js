@@ -211,6 +211,34 @@ app.put('/api/posts/:id', function (req, res) {
 })
 
 /*
+GET comments
+*/
+app.get('/api/comments/:id', function (req, res) {
+	db.collection('comments').find({postid: req.params.id}).toArray(function(err, docs) {
+		res.json(docs);
+	})
+})
+
+/*
+POST comment
+*/
+app.post('/api/comments', function (req, res) {
+	if(!req.session.userId) {
+		console.log("Error creating post: User session missing");
+		res.status(400).send('Error creating post: User session missing');
+		return
+	}
+	var newComment = req.body;
+	console.log(newComment);
+	db.collection('comments').insertOne(newComment, function(err, result) {
+		var newCommentId = result.insertedId;
+		db.collection('comments').find({_id: newCommentId}).next(function(err, docs) {
+			res.json(docs);
+		})
+	})
+})
+
+/*
 User Component
 */
 app.get('/user/:id', function (req, res) {

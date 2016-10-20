@@ -45968,8 +45968,9 @@
 			var deletePost = this.props.deletePost;
 			var updatePost = this.props.updatePost;
 			var uimageurl = this.props.uimageurl;
+			var convertDate = this.props.convertDate;
 			var postNodes = this.props.data.map(function (post) {
-				return _react2.default.createElement(_Post2.default, { key: post._id, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
+				return _react2.default.createElement(_Post2.default, { key: post._id, convertDate: convertDate, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated, username: post.username });
 			});
 			return _react2.default.createElement(
 				'div',
@@ -46055,7 +46056,8 @@
 			e.preventDefault();
 			var newDate = new Date();
 			var form = document.forms.createPostForm;
-			this.createPost({ title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate) });
+			var username = this.props.user.firstname + " " + this.props.user.lastname;
+			this.createPost({ title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate), username: username });
 			this.setState({ title: '' });
 			this.setState({ body: '' });
 			//close modal
@@ -46166,7 +46168,7 @@
 						_react2.default.createElement(
 							_reactBootstrap.Col,
 							{ md: 8 },
-							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, uimageurl: this.props.user.imageurl })
+							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, uimageurl: this.props.user.imageurl, convertDate: this.convertDate })
 						)
 					)
 				),
@@ -46288,10 +46290,47 @@
 	var CommentList = _react2.default.createClass({
 		displayName: 'CommentList',
 
+		getInitialState: function getInitialState() {
+			return {
+				body: ""
+			};
+		},
+
 		handleCommentSubmit: function handleCommentSubmit(e) {
 			e.preventDefault();
-			console.log("Submit");
+			var newDate = new Date();
 			//if comment is not null create comment
+			if (this.state.body != "") {
+				this.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username });
+				this.setState({ body: "" }, function () {
+					// clear comment
+					// console.log(document.getElementsByClassName("CommentInput"));
+				});
+			}
+		},
+
+		createComment: function createComment(comment) {
+			var _this = this;
+
+			console.log(comment);
+			fetch('/api/comments', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+				body: JSON.stringify(comment)
+			}).then(function (response) {
+				return response.json();
+			}).then(function (data) {
+				var dataArray = [data];
+				var modifiedComments = dataArray.concat(_this.state.comments);
+				_this.setState({ comments: modifiedComments });
+			}).catch(function (err) {
+				console.log('Error creating comment', err);
+			});
+		},
+
+		onChangeComment: function onChangeComment(e) {
+			this.setState({ body: e.target.value });
 		},
 
 		render: function render() {
@@ -46307,7 +46346,7 @@
 				_react2.default.createElement(
 					'form',
 					{ name: 'createCommentForm', onSubmit: this.handleCommentSubmit },
-					_react2.default.createElement('input', { className: 'CommentInput', type: 'text', placeholder: 'Write a comment...' })
+					_react2.default.createElement('input', { className: 'CommentInput', type: 'text', placeholder: 'Write a comment...', onChange: this.onChangeComment })
 				)
 			);
 		}
@@ -46320,8 +46359,26 @@
 			return {
 				showUpdatePostModal: false,
 				title: this.props.title,
-				body: this.props.body
+				body: this.props.body,
+				comments: []
 			};
+		},
+
+		componentDidMount: function componentDidMount() {
+			this.loadComments();
+		},
+
+		loadComments: function loadComments() {
+			var _this2 = this;
+
+			fetch('/api/comments/' + this.props.id, { credentials: 'include' }).then(function (response) {
+				return response.json();
+			}).then(function (data) {
+				// var flipData = data.reverse()
+				_this2.setState({ comments: data });
+			}).catch(function (err) {
+				console.log(err);
+			});
 		},
 
 		closeUpdatePostModal: function closeUpdatePostModal() {
@@ -46347,7 +46404,7 @@
 
 		handleUpdatePostSubmit: function handleUpdatePostSubmit(e) {
 			e.preventDefault();
-			this.props.updatePost(this.props.id, { title: this.state.title, body: this.state.body, timecreated: this.props.timecreated });
+			this.props.updatePost(this.props.id, { title: this.state.title, body: this.state.body, timecreated: this.props.timecreated, username: this.props.username });
 			//close modal
 			this.closeUpdatePostModal();
 		},
@@ -46392,7 +46449,7 @@
 						{ className: 'PostBody' },
 						this.props.body
 					),
-					_react2.default.createElement(CommentList, { data: exampleComments, uimageurl: this.props.uimageurl })
+					_react2.default.createElement(CommentList, { data: this.state.comments, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
 				),
 				_react2.default.createElement(
 					_reactBootstrap.Modal,
@@ -46510,7 +46567,22 @@
 	              _react2.default.createElement(
 	                'a',
 	                { href: 'https://github.com/stcho/blogapp' },
-	                'https://github.com/stcho/blogapp'
+	                'github.com/stcho/blogapp'
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'p',
+	              null,
+	              _react2.default.createElement(
+	                'strong',
+	                null,
+	                'Contact:'
+	              ),
+	              ' ',
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'https://www.linkedin.com/in/sthomascho' },
+	                'linkedin.com/in/sthomascho'
 	              )
 	            )
 	          )

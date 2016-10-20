@@ -35,13 +35,49 @@ var Comment = React.createClass({
 			</div>
 		)
 	}
-})
+});
+
 
 var CommentList = React.createClass({
+	getInitialState: function() {
+		return {
+			body: ""
+		};
+	},
+
 	handleCommentSubmit: function(e) {
 		e.preventDefault();
-		console.log("Submit");
+		var newDate = new Date();
 		//if comment is not null create comment
+		if(this.state.body != "") {
+			this.createComment({imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username})
+			this.setState({ body: "" }, function () {
+			    // clear comment
+			    // console.log(document.getElementsByClassName("CommentInput"));
+			});
+		}
+	},
+
+	createComment: function(comment) {
+		console.log(comment);
+		fetch('/api/comments', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			credentials: 'include',
+			body: JSON.stringify(comment)
+		}).then(response => 
+			response.json()
+		).then(data => {	
+			var dataArray = [data];
+			var modifiedComments = dataArray.concat(this.state.comments);
+			this.setState({ comments: modifiedComments });
+		}).catch(err => {
+			console.log('Error creating comment', err)
+		});
+	},
+
+	onChangeComment: function(e) {
+		this.setState({ body: e.target.value });
 	},
 
 	render: function() {
@@ -56,20 +92,37 @@ var CommentList = React.createClass({
 				{commentNodes}
 				<img className="CommentImg" src={this.props.uimageurl} alt="Commenter picture" height="30" width="30" />
 				<form name="createCommentForm" onSubmit={this.handleCommentSubmit}>
-					<input className="CommentInput" type="text" placeholder="Write a comment..." />
+					<input className="CommentInput" type="text" placeholder="Write a comment..." onChange={this.onChangeComment}/>
 				</form>
 			</div>
 		);
 	}
 });
 
+
 export default React.createClass({
 	getInitialState: function() {
 		return { 
 			showUpdatePostModal: false,
 			title: this.props.title,
-			body: this.props.body
+			body: this.props.body,
+			comments: []
 		};
+	},
+
+	componentDidMount: function() {
+		this.loadComments();
+	},
+
+	loadComments: function() {
+		fetch('/api/comments/'+this.props.id, {credentials: 'include'}).then(response =>
+			response.json()
+		).then(data => {
+			// var flipData = data.reverse()
+			this.setState({ comments: data });
+		}).catch(err => {
+			console.log(err);
+		});
 	},
 
 	closeUpdatePostModal: function() {
@@ -95,7 +148,7 @@ export default React.createClass({
 
 	handleUpdatePostSubmit: function(e) {
 		e.preventDefault();
-		this.props.updatePost(this.props.id, {title: this.state.title, body: this.state.body, timecreated: this.props.timecreated});
+		this.props.updatePost(this.props.id, {title: this.state.title, body: this.state.body, timecreated: this.props.timecreated, username: this.props.username});
 		//close modal
 		this.closeUpdatePostModal();
 	},
@@ -119,7 +172,7 @@ export default React.createClass({
 					<div className="PostBody">
 						{this.props.body}
 					</div>
-					<CommentList data={exampleComments} uimageurl={this.props.uimageurl}/>
+					<CommentList data={this.state.comments} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
 				</div>
 
 				<Modal show={this.state.showUpdatePostModal} onHide={this.closeUpdatePostModal}>

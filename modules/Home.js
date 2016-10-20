@@ -8,9 +8,10 @@ var PostList = React.createClass({
 		var deletePost = this.props.deletePost;
 		var updatePost = this.props.updatePost;
 		var uimageurl = this.props.uimageurl;
+		var convertDate = this.props.convertDate;
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} uimageurl={uimageurl} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
+				<Post key={post._id} convertDate={convertDate} uimageurl={uimageurl} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} username={post.username}></Post>
 			);
 		});
 		return (
@@ -93,7 +94,8 @@ export default React.createClass({
 		e.preventDefault();	
 		var newDate = new Date();
 		var form = document.forms.createPostForm;
-		this.createPost({title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate)});
+		var username = this.props.user.firstname + " " + this.props.user.lastname;
+		this.createPost({title: form.title.value, body: form.body.value, timecreated: this.convertDate(newDate), username: username});
 		this.setState({ title: '' });
 		this.setState({ body: '' });
 		//close modal
@@ -173,7 +175,7 @@ export default React.createClass({
 							</div>
 						</Col>
 						<Col md={8}>
-							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost} uimageurl={this.props.user.imageurl}/>							
+							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost} uimageurl={this.props.user.imageurl} convertDate={this.convertDate} />							
 						</Col>
 					</Row>
 				</Grid>
