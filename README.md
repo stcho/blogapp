@@ -35,4 +35,4 @@ npm start
 Go to [http://localhost:3000](http://localhost:3000)
 
 ####To Do
-When deleting post delete its comments as well, Sign out, Nav-Bar Active State
+Sign out, Nav-Bar Active State

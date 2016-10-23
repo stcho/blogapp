@@ -193,7 +193,9 @@ app.delete('/api/posts/:id', function (req, res) {
 	var postToDelete = req.params.id;
 	db.collection('posts').remove({_id: ObjectId(postToDelete)}, function(err) {
 		res.status(400).send('Error removing post from db: ', err);
-	})
+	});
+	db.collection('comments').remove({postid: postToDelete}, function(err) {	
+	});
 })
 
 /*
