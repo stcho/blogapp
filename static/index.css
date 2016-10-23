@@ -76,12 +76,32 @@
 	margin-bottom: 5px;
 }
 
+.CommentDelete {
+	float: right;
+	display: none;
+	margin-right: 14px;
+}
+
+.CommentDelete:hover {
+	cursor: pointer;
+}
+
+.Comment:hover .CommentDelete{	
+	display: block;
+}
+
 #CommentInput {
 	margin-top: 3px;
 	height: 26px;
 	width: 90%;
 	font-size: 85%;
 	padding-left: 5px;
+}
+
+@media (max-width: 480px) {
+	#CommentInput {
+		width: 80%;
+	}
 }
 
 .card {

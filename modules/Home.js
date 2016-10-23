@@ -126,7 +126,7 @@ export default React.createClass({
 				method: 'DELETE',
 				credentials: 'include'
 			}).catch(err => {
-				console.log('Error deleting user', err)
+				console.log('Error deleting post', err)
 			});
 			//find specific post with id in this.state.posts and delete it
 			function findDeletedPost(post) {

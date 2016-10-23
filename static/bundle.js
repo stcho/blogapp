@@ -46095,7 +46095,7 @@
 					method: 'DELETE',
 					credentials: 'include'
 				}).catch(function (err) {
-					console.log('Error deleting user', err);
+					console.log('Error deleting post', err);
 				});
 				var postsArray = this.state.posts;
 				var indexToSplice = this.state.posts.findIndex(findDeletedPost);
@@ -46241,35 +46241,11 @@
 
 	var _reactRouter = __webpack_require__(172);
 
+	var _Comment = __webpack_require__(495);
+
+	var _Comment2 = _interopRequireDefault(_Comment);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Comment = _react2.default.createClass({
-		displayName: 'Comment',
-
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement('img', { className: 'CommentImg', src: this.props.imageurl, alt: 'Commenter picture', height: '30', width: '30' }),
-				_react2.default.createElement(
-					'div',
-					{ className: 'CommentBody' },
-					_react2.default.createElement(
-						_reactRouter.Link,
-						null,
-						this.props.username
-					),
-					' ',
-					this.props.body
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'CommentTimeCreated' },
-					this.props.timecreated
-				)
-			);
-		}
-	});
 
 	var CommentList = _react2.default.createClass({
 		displayName: 'CommentList',
@@ -46298,8 +46274,9 @@
 		},
 
 		render: function render() {
+			var deleteComment = this.props.deleteComment;
 			var commentNodes = this.props.data.map(function (comment) {
-				return _react2.default.createElement(Comment, { key: comment._id, id: comment._id, imageurl: comment.imageurl, username: comment.username, body: comment.body, timecreated: comment.timecreated });
+				return _react2.default.createElement(_Comment2.default, { key: comment._id, deleteComment: deleteComment, id: comment._id, imageurl: comment.imageurl, username: comment.username, body: comment.body, timecreated: comment.timecreated });
 			});
 			return _react2.default.createElement(
 				'div',
@@ -46392,6 +46369,27 @@
 			});
 		},
 
+		deleteComment: function deleteComment(id) {
+			var confirmation = confirm('Are you sure you want to delete this comment?');
+			if (confirmation === true) {
+				//find specific comment with id in this.state.comments and delete it
+				var findDeletedComment = function findDeletedComment(comment) {
+					return comment._id == id;;
+				};
+
+				fetch('/api/comments/' + id, {
+					method: 'DELETE',
+					credentials: 'include'
+				}).catch(function (err) {
+					console.log('Error deleting comment', err);
+				});
+				var commentsArray = this.state.comments;
+				var indexToSplice = this.state.comments.findIndex(findDeletedComment);
+				commentsArray.splice(indexToSplice, 1);
+				this.setState({ comments: commentsArray });
+			}
+		},
+
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -46432,7 +46430,7 @@
 						{ className: 'PostBody' },
 						this.props.body
 					),
-					_react2.default.createElement(CommentList, { data: this.state.comments, createComment: this.createComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
+					_react2.default.createElement(CommentList, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
 				),
 				_react2.default.createElement(
 					_reactBootstrap.Modal,
@@ -47188,6 +47186,61 @@
 	      )
 	    );
 	  }
+	});
+
+/***/ },
+/* 495 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(172);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+		displayName: 'Comment',
+
+		handleDeleteComment: function handleDeleteComment() {
+			this.props.deleteComment(this.props.id);
+		},
+
+		render: function render() {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'Comment' },
+				_react2.default.createElement('img', { className: 'CommentImg', src: this.props.imageurl, alt: 'Commenter picture', height: '30', width: '30' }),
+				_react2.default.createElement(
+					'div',
+					{ className: 'CommentBody' },
+					_react2.default.createElement(
+						_reactRouter.Link,
+						null,
+						this.props.username
+					),
+					' ',
+					this.props.body,
+					_react2.default.createElement(
+						'span',
+						{ className: 'CommentDelete', onClick: this.handleDeleteComment },
+						'x'
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'CommentTimeCreated' },
+					this.props.timecreated
+				)
+			);
+		}
 	});
 
 /***/ }

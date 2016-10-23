@@ -13,6 +13,7 @@ Complete blogging application made with React, Express, Node, MongoDB, Webpack, 
 * Post Deletion
 * Post Update/Edit
 * Comment Creation
+* Comment Deletion
 
 ####Setup
 ```

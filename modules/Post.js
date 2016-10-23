@@ -2,23 +2,7 @@ import React from 'react';
 import { Button, Modal, FormGroup, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router'
 
-
-var Comment = React.createClass({
-	render: function() {
-		return (
-			<div>
-				<img className="CommentImg" src={this.props.imageurl} alt="Commenter picture" height="30" width="30" />
-				<div className="CommentBody">
-					<Link>{this.props.username}</Link> {this.props.body}
-				</div>
-				<div className="CommentTimeCreated">
-					{this.props.timecreated}
-				</div>
-			</div>
-		)
-	}
-});
-
+import Comment from './Comment'
 
 var CommentList = React.createClass({
 	getInitialState: function() {
@@ -45,9 +29,10 @@ var CommentList = React.createClass({
 	},
 
 	render: function() {
+		var deleteComment = this.props.deleteComment;
 		var commentNodes = this.props.data.map(function(comment) {
 			return (
-				<Comment key={comment._id} id={comment._id} imageurl={comment.imageurl} username={comment.username} body={comment.body} timecreated={comment.timecreated}></Comment>
+				<Comment key={comment._id} deleteComment={deleteComment} id={comment._id} imageurl={comment.imageurl} username={comment.username} body={comment.body} timecreated={comment.timecreated}></Comment>
 			);
 		});
 		return (
@@ -134,6 +119,26 @@ export default React.createClass({
 		});
 	},
 
+	deleteComment: function(id) {
+		var confirmation = confirm('Are you sure you want to delete this comment?');
+		if (confirmation === true) {
+			fetch('/api/comments/'+id, {
+				method: 'DELETE',
+				credentials: 'include'
+			}).catch(err => {
+				console.log('Error deleting comment', err)
+			});
+			//find specific comment with id in this.state.comments and delete it
+			function findDeletedComment(comment) {
+				return comment._id == id;;
+			}
+			var commentsArray = this.state.comments;
+			var indexToSplice = this.state.comments.findIndex(findDeletedComment)
+			commentsArray.splice(indexToSplice, 1);
+			this.setState({ comments: commentsArray });
+		}
+	},
+
 	render: function() {
 		return (
 			<div>
@@ -153,7 +158,7 @@ export default React.createClass({
 					<div className="PostBody">
 						{this.props.body}
 					</div>
-					<CommentList data={this.state.comments} createComment={this.createComment} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
+					<CommentList data={this.state.comments} createComment={this.createComment} deleteComment={this.deleteComment} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
 				</div>
 
 				<Modal show={this.state.showUpdatePostModal} onHide={this.closeUpdatePostModal}>

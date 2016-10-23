@@ -229,12 +229,26 @@ app.post('/api/comments', function (req, res) {
 		return
 	}
 	var newComment = req.body;
-	console.log(newComment);
 	db.collection('comments').insertOne(newComment, function(err, result) {
 		var newCommentId = result.insertedId;
 		db.collection('comments').find({_id: newCommentId}).next(function(err, docs) {
 			res.json(docs);
 		})
+	})
+})
+
+/*
+DELETE one comment
+*/
+app.delete('/api/comments/:id', function (req, res) {
+	if(!req.session.userId) {
+		console.log("Error deleting comment: User session missing");
+		res.status(400).send('Error deleting comment: User session missing');
+		return
+	}
+	var commentToDelete = req.params.id;
+	db.collection('comments').remove({_id: ObjectId(commentToDelete)}, function(err) {
+		res.status(400).send('Error removing comment from db: ', err);
 	})
 })
 
