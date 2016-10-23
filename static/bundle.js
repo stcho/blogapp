@@ -45955,30 +45955,11 @@
 
 	var _reactBootstrap = __webpack_require__(236);
 
-	var _Post = __webpack_require__(488);
+	var _PostList = __webpack_require__(497);
 
-	var _Post2 = _interopRequireDefault(_Post);
+	var _PostList2 = _interopRequireDefault(_PostList);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var PostList = _react2.default.createClass({
-		displayName: 'PostList',
-
-		render: function render() {
-			var deletePost = this.props.deletePost;
-			var updatePost = this.props.updatePost;
-			var uimageurl = this.props.uimageurl;
-			var convertDate = this.props.convertDate;
-			var postNodes = this.props.data.map(function (post) {
-				return _react2.default.createElement(_Post2.default, { key: post._id, convertDate: convertDate, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated, username: post.username });
-			});
-			return _react2.default.createElement(
-				'div',
-				null,
-				postNodes
-			);
-		}
-	});
 
 	exports.default = _react2.default.createClass({
 		displayName: 'Home',
@@ -46168,7 +46149,7 @@
 						_react2.default.createElement(
 							_reactBootstrap.Col,
 							{ md: 8 },
-							_react2.default.createElement(PostList, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, uimageurl: this.props.user.imageurl, convertDate: this.convertDate })
+							_react2.default.createElement(_PostList2.default, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, uimageurl: this.props.user.imageurl, convertDate: this.convertDate })
 						)
 					)
 				),
@@ -46241,57 +46222,11 @@
 
 	var _reactRouter = __webpack_require__(172);
 
-	var _Comment = __webpack_require__(495);
+	var _CommentList = __webpack_require__(496);
 
-	var _Comment2 = _interopRequireDefault(_Comment);
+	var _CommentList2 = _interopRequireDefault(_CommentList);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var CommentList = _react2.default.createClass({
-		displayName: 'CommentList',
-
-		getInitialState: function getInitialState() {
-			return {
-				body: ""
-			};
-		},
-
-		handleCommentSubmit: function handleCommentSubmit(e) {
-			e.preventDefault();
-			var newDate = new Date();
-			//if comment is not null create comment
-			if (this.state.body != "") {
-				this.props.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username });
-				this.setState({ body: "" }, function () {
-					// clear comment input value
-					document.getElementById("CommentInput").value = "";
-				});
-			}
-		},
-
-		onChangeComment: function onChangeComment(e) {
-			this.setState({ body: e.target.value });
-		},
-
-		render: function render() {
-			var deleteComment = this.props.deleteComment;
-			var commentNodes = this.props.data.map(function (comment) {
-				return _react2.default.createElement(_Comment2.default, { key: comment._id, deleteComment: deleteComment, id: comment._id, imageurl: comment.imageurl, username: comment.username, body: comment.body, timecreated: comment.timecreated });
-			});
-			return _react2.default.createElement(
-				'div',
-				{ className: 'CommentBox' },
-				_react2.default.createElement('hr', null),
-				commentNodes,
-				_react2.default.createElement('img', { className: 'CommentImg', src: this.props.uimageurl, alt: 'Commenter picture', height: '30', width: '30' }),
-				_react2.default.createElement(
-					'form',
-					{ name: 'createCommentForm', onSubmit: this.handleCommentSubmit },
-					_react2.default.createElement('input', { id: 'CommentInput', type: 'text', placeholder: 'Write a comment...', onChange: this.onChangeComment })
-				)
-			);
-		}
-	});
 
 	exports.default = _react2.default.createClass({
 		displayName: 'Post',
@@ -46430,7 +46365,7 @@
 						{ className: 'PostBody' },
 						this.props.body
 					),
-					_react2.default.createElement(CommentList, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
+					_react2.default.createElement(_CommentList2.default, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
 				),
 				_react2.default.createElement(
 					_reactBootstrap.Modal,
@@ -46882,10 +46817,77 @@
 
 	var _reactBootstrap = __webpack_require__(236);
 
+	var _CommentList = __webpack_require__(496);
+
+	var _CommentList2 = _interopRequireDefault(_CommentList);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Post = _react2.default.createClass({
 	  displayName: 'Post',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      comments: []
+	    };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this.loadComments();
+	  },
+
+	  loadComments: function loadComments() {
+	    var _this = this;
+
+	    fetch('/api/comments/' + this.props.id, { credentials: 'include' }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      // var flipData = data.reverse()
+	      _this.setState({ comments: data });
+	    }).catch(function (err) {
+	      console.log(err);
+	    });
+	  },
+
+	  createComment: function createComment(comment) {
+	    var _this2 = this;
+
+	    fetch('/api/comments', {
+	      method: 'POST',
+	      headers: { 'Content-Type': 'application/json' },
+	      credentials: 'include',
+	      body: JSON.stringify(comment)
+	    }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      var dataArray = [data];
+	      var modifiedComments = dataArray.concat(_this2.state.comments);
+	      _this2.setState({ comments: modifiedComments });
+	    }).catch(function (err) {
+	      console.log('Error creating comment', err);
+	    });
+	  },
+
+	  deleteComment: function deleteComment(id) {
+	    var confirmation = confirm('Are you sure you want to delete this comment?');
+	    if (confirmation === true) {
+	      //find specific comment with id in this.state.comments and delete it
+	      var findDeletedComment = function findDeletedComment(comment) {
+	        return comment._id == id;;
+	      };
+
+	      fetch('/api/comments/' + id, {
+	        method: 'DELETE',
+	        credentials: 'include'
+	      }).catch(function (err) {
+	        console.log('Error deleting comment', err);
+	      });
+	      var commentsArray = this.state.comments;
+	      var indexToSplice = this.state.comments.findIndex(findDeletedComment);
+	      commentsArray.splice(indexToSplice, 1);
+	      this.setState({ comments: commentsArray });
+	    }
+	  },
 
 	  handleDelete: function handleDelete(e) {
 	    e.preventDefault();
@@ -46910,7 +46912,8 @@
 	        'div',
 	        { className: 'PostBody' },
 	        this.props.body
-	      )
+	      ),
+	      _react2.default.createElement(_CommentList2.default, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
 	    );
 	  }
 	});
@@ -46946,25 +46949,25 @@
 	  },
 
 	  loadPosts: function loadPosts() {
-	    var _this = this;
+	    var _this3 = this;
 
 	    fetch('/api/posts/' + this.props.params.userId, { credentials: 'include' }).then(function (response) {
 	      return response.json();
 	    }).then(function (data) {
 	      var flipData = data.reverse();
-	      _this.setState({ posts: data });
+	      _this3.setState({ posts: data });
 	    }).catch(function (err) {
 	      console.log(err);
 	    });
 	  },
 
 	  loadUser: function loadUser() {
-	    var _this2 = this;
+	    var _this4 = this;
 
 	    fetch('/api/users/' + this.props.params.userId, { credentials: 'include' }).then(function (response) {
 	      return response.json();
 	    }).then(function (data) {
-	      _this2.setState({ user: data });
+	      _this4.setState({ user: data });
 	    }).catch(function (err) {
 	      console.log(err);
 	    });
@@ -47214,6 +47217,7 @@
 		},
 
 		render: function render() {
+			var profilePath = '#';
 			return _react2.default.createElement(
 				'div',
 				{ className: 'Comment' },
@@ -47222,8 +47226,8 @@
 					'div',
 					{ className: 'CommentBody' },
 					_react2.default.createElement(
-						_reactRouter.Link,
-						null,
+						'a',
+						{ href: profilePath },
 						this.props.username
 					),
 					' ',
@@ -47239,6 +47243,111 @@
 					{ className: 'CommentTimeCreated' },
 					this.props.timecreated
 				)
+			);
+		}
+	});
+
+/***/ },
+/* 496 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Comment = __webpack_require__(495);
+
+	var _Comment2 = _interopRequireDefault(_Comment);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+		displayName: 'CommentList',
+
+		getInitialState: function getInitialState() {
+			return {
+				body: ""
+			};
+		},
+
+		handleCommentSubmit: function handleCommentSubmit(e) {
+			e.preventDefault();
+			var newDate = new Date();
+			//if comment is not null create comment
+			if (this.state.body != "") {
+				this.props.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username });
+				this.setState({ body: "" }, function () {
+					// clear comment input value
+					document.getElementById("CommentInput").value = "";
+				});
+			}
+		},
+
+		onChangeComment: function onChangeComment(e) {
+			this.setState({ body: e.target.value });
+		},
+
+		render: function render() {
+			var deleteComment = this.props.deleteComment;
+			var commentNodes = this.props.data.map(function (comment) {
+				return _react2.default.createElement(_Comment2.default, { key: comment._id, deleteComment: deleteComment, id: comment._id, imageurl: comment.imageurl, username: comment.username, body: comment.body, timecreated: comment.timecreated });
+			});
+			return _react2.default.createElement(
+				'div',
+				{ className: 'CommentBox' },
+				_react2.default.createElement('hr', null),
+				commentNodes,
+				_react2.default.createElement('img', { className: 'CommentImg', src: this.props.uimageurl, alt: 'Commenter picture', height: '30', width: '30' }),
+				_react2.default.createElement(
+					'form',
+					{ name: 'createCommentForm', onSubmit: this.handleCommentSubmit },
+					_react2.default.createElement('input', { id: 'CommentInput', type: 'text', placeholder: 'Write a comment...', onChange: this.onChangeComment })
+				)
+			);
+		}
+	});
+
+/***/ },
+/* 497 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Post = __webpack_require__(488);
+
+	var _Post2 = _interopRequireDefault(_Post);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+		displayName: 'PostList',
+
+		render: function render() {
+			var deletePost = this.props.deletePost;
+			var updatePost = this.props.updatePost;
+			var uimageurl = this.props.uimageurl;
+			var convertDate = this.props.convertDate;
+			var postNodes = this.props.data.map(function (post) {
+				return _react2.default.createElement(_Post2.default, { key: post._id, convertDate: convertDate, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated, username: post.username });
+			});
+			return _react2.default.createElement(
+				'div',
+				null,
+				postNodes
 			);
 		}
 	});

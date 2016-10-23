@@ -1,7 +1,67 @@
 import React from 'react'
 import { Grid, Row, Col} from 'react-bootstrap'
 
+import CommentList from './CommentList'
+
 var Post = React.createClass({
+  getInitialState: function() {
+    return {
+      comments: []
+    }
+  },
+
+  componentDidMount: function() {
+    this.loadComments();
+  },
+
+  loadComments: function() {
+    fetch('/api/comments/'+this.props.id, {credentials: 'include'}).then(response =>
+      response.json()
+    ).then(data => {
+      // var flipData = data.reverse()
+      this.setState({ comments: data });
+    }).catch(err => {
+      console.log(err);
+    });
+  },
+
+  createComment: function(comment) {
+    fetch('/api/comments', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
+      body: JSON.stringify(comment)
+    }).then(response => 
+      response.json()
+    ).then(data => {  
+      var dataArray = [data];
+      var modifiedComments = dataArray.concat(this.state.comments);
+      this.setState({ comments: modifiedComments });
+    }).catch(err => {
+      console.log('Error creating comment', err)
+    });
+  },
+
+  deleteComment: function(id) {
+    var confirmation = confirm('Are you sure you want to delete this comment?');
+    if (confirmation === true) {
+      fetch('/api/comments/'+id, {
+        method: 'DELETE',
+        credentials: 'include'
+      }).catch(err => {
+        console.log('Error deleting comment', err)
+      });
+      //find specific comment with id in this.state.comments and delete it
+      function findDeletedComment(comment) {
+        return comment._id == id;;
+      }
+      var commentsArray = this.state.comments;
+      var indexToSplice = this.state.comments.findIndex(findDeletedComment)
+      commentsArray.splice(indexToSplice, 1);
+      this.setState({ comments: commentsArray });
+    }
+  },
+
   handleDelete: function(e) {
     e.preventDefault();
     this.props.deletePost(this.props.id);
@@ -19,10 +79,12 @@ var Post = React.createClass({
         <div className="PostBody">
           {this.props.body}
         </div>
+        <CommentList data={this.state.comments} createComment={this.createComment} deleteComment={this.deleteComment} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
       </div>
     );
   }
 });
+
 
 var PostList = React.createClass({
   render: function() {
@@ -38,6 +100,7 @@ var PostList = React.createClass({
     );
   }
 });
+
 
 export default React.createClass({
   getInitialState: function() {
