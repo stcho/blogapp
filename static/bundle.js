@@ -46149,7 +46149,7 @@
 						_react2.default.createElement(
 							_reactBootstrap.Col,
 							{ md: 8 },
-							_react2.default.createElement(_PostList2.default, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, uimageurl: this.props.user.imageurl, convertDate: this.convertDate })
+							_react2.default.createElement(_PostList2.default, { data: this.state.posts, deletePost: this.deletePost, updatePost: this.updatePost, signedinuser: this.props.user, uimageurl: this.props.user.imageurl, convertDate: this.convertDate })
 						)
 					)
 				),
@@ -46297,7 +46297,7 @@
 				return response.json();
 			}).then(function (data) {
 				var dataArray = [data];
-				var modifiedComments = dataArray.concat(_this2.state.comments);
+				var modifiedComments = _this2.state.comments.concat(dataArray);
 				_this2.setState({ comments: modifiedComments });
 			}).catch(function (err) {
 				console.log('Error creating comment', err);
@@ -46365,7 +46365,7 @@
 						{ className: 'PostBody' },
 						this.props.body
 					),
-					_react2.default.createElement(_CommentList2.default, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
+					_react2.default.createElement(_CommentList2.default, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, signedinuser: this.props.signedinuser, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
 				),
 				_react2.default.createElement(
 					_reactBootstrap.Modal,
@@ -46861,7 +46861,7 @@
 	      return response.json();
 	    }).then(function (data) {
 	      var dataArray = [data];
-	      var modifiedComments = dataArray.concat(_this2.state.comments);
+	      var modifiedComments = _this2.state.comments.concat(dataArray);
 	      _this2.setState({ comments: modifiedComments });
 	    }).catch(function (err) {
 	      console.log('Error creating comment', err);
@@ -46894,6 +46894,35 @@
 	    this.props.deletePost(this.props.id);
 	  },
 
+	  convertDate: function convertDate(date) {
+	    var dd = date.getDate();
+	    var mm = date.getMonth() + 1; //January is 0
+	    var yyyy = date.getFullYear();
+	    var hours = date.getHours();
+	    var mins = date.getMinutes();
+
+	    if (dd < 10) {
+	      dd = '0' + dd;
+	    }
+	    if (mm < 10) {
+	      mm = '0' + mm;
+	    }
+	    if (mins < 10) {
+	      mins = '0' + mins;
+	    }
+	    if (hours <= 12) {
+	      hours = hours;
+	      mins = mins + 'am';
+	    }
+	    if (hours > 12) {
+	      hours = hours - 12;
+	      mins = mins + 'pm';
+	    }
+
+	    date = mm + '/' + dd + '/' + yyyy + ' ' + hours + ':' + mins;
+	    return date;
+	  },
+
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
@@ -46913,7 +46942,7 @@
 	        { className: 'PostBody' },
 	        this.props.body
 	      ),
-	      _react2.default.createElement(_CommentList2.default, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, uimageurl: this.props.uimageurl, convertDate: this.props.convertDate, postid: this.props.id, username: this.props.username })
+	      _react2.default.createElement(_CommentList2.default, { data: this.state.comments, createComment: this.createComment, deleteComment: this.deleteComment, signedinuser: this.props.signedinuser, uimageurl: this.props.signedinuser.imageurl, convertDate: this.convertDate, postid: this.props.id, username: this.props.signedinuser.firstname + " " + this.props.signedinuser.lastname })
 	    );
 	  }
 	});
@@ -46922,8 +46951,9 @@
 	  displayName: 'PostList',
 
 	  render: function render() {
+	    var signedinuser = this.props.signedinuser;
 	    var postNodes = this.props.data.map(function (post) {
-	      return _react2.default.createElement(Post, { key: post._id, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
+	      return _react2.default.createElement(Post, { key: post._id, signedinuser: signedinuser, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated });
 	    });
 	    return _react2.default.createElement(
 	      'div',
@@ -46939,35 +46969,49 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      user: [],
+	      signedinuser: [],
 	      posts: []
 	    };
 	  },
 
 	  componentDidMount: function componentDidMount() {
 	    this.loadUser();
+	    this.loadSignedInUser();
 	    this.loadPosts();
 	  },
 
-	  loadPosts: function loadPosts() {
+	  loadSignedInUser: function loadSignedInUser() {
 	    var _this3 = this;
+
+	    fetch('/api/signedinuser/', { credentials: 'include' }).then(function (response) {
+	      return response.json();
+	    }).then(function (data) {
+	      _this3.setState({ signedinuser: data });
+	    }).catch(function (err) {
+	      console.log(err);
+	    });
+	  },
+
+	  loadPosts: function loadPosts() {
+	    var _this4 = this;
 
 	    fetch('/api/posts/' + this.props.params.userId, { credentials: 'include' }).then(function (response) {
 	      return response.json();
 	    }).then(function (data) {
 	      var flipData = data.reverse();
-	      _this3.setState({ posts: data });
+	      _this4.setState({ posts: data });
 	    }).catch(function (err) {
 	      console.log(err);
 	    });
 	  },
 
 	  loadUser: function loadUser() {
-	    var _this4 = this;
+	    var _this5 = this;
 
 	    fetch('/api/users/' + this.props.params.userId, { credentials: 'include' }).then(function (response) {
 	      return response.json();
 	    }).then(function (data) {
-	      _this4.setState({ user: data });
+	      _this5.setState({ user: data });
 	    }).catch(function (err) {
 	      console.log(err);
 	    });
@@ -47004,7 +47048,7 @@
 	          _react2.default.createElement(
 	            _reactBootstrap.Col,
 	            { md: 8 },
-	            _react2.default.createElement(PostList, { data: this.state.posts })
+	            _react2.default.createElement(PostList, { data: this.state.posts, signedinuser: this.state.signedinuser })
 	          )
 	        )
 	      )
@@ -47217,7 +47261,7 @@
 		},
 
 		render: function render() {
-			var profilePath = '#';
+			var profilePath = '/profile/' + this.props.userid;
 			return _react2.default.createElement(
 				'div',
 				{ className: 'Comment' },
@@ -47281,7 +47325,7 @@
 			var newDate = new Date();
 			//if comment is not null create comment
 			if (this.state.body != "") {
-				this.props.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username });
+				this.props.createComment({ imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username, userid: this.props.signedinuser._id });
 				this.setState({ body: "" }, function () {
 					// clear comment input value
 					document.getElementById("CommentInput").value = "";
@@ -47296,7 +47340,7 @@
 		render: function render() {
 			var deleteComment = this.props.deleteComment;
 			var commentNodes = this.props.data.map(function (comment) {
-				return _react2.default.createElement(_Comment2.default, { key: comment._id, deleteComment: deleteComment, id: comment._id, imageurl: comment.imageurl, username: comment.username, body: comment.body, timecreated: comment.timecreated });
+				return _react2.default.createElement(_Comment2.default, { key: comment._id, deleteComment: deleteComment, id: comment._id, imageurl: comment.imageurl, userid: comment.userid, username: comment.username, body: comment.body, timecreated: comment.timecreated });
 			});
 			return _react2.default.createElement(
 				'div',
@@ -47341,8 +47385,9 @@
 			var updatePost = this.props.updatePost;
 			var uimageurl = this.props.uimageurl;
 			var convertDate = this.props.convertDate;
+			var signedinuser = this.props.signedinuser;
 			var postNodes = this.props.data.map(function (post) {
-				return _react2.default.createElement(_Post2.default, { key: post._id, convertDate: convertDate, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated, username: post.username });
+				return _react2.default.createElement(_Post2.default, { key: post._id, convertDate: convertDate, signedinuser: signedinuser, uimageurl: uimageurl, updatePost: updatePost, deletePost: deletePost, id: post._id, title: post.title, body: post.body, timecreated: post.timecreated, username: post.username });
 			});
 			return _react2.default.createElement(
 				'div',

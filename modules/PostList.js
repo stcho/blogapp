@@ -8,9 +8,10 @@ export default React.createClass({
 		var updatePost = this.props.updatePost;
 		var uimageurl = this.props.uimageurl;
 		var convertDate = this.props.convertDate;
+		var signedinuser = this.props.signedinuser;
 		var postNodes = this.props.data.map(function(post) {
 			return (
-				<Post key={post._id} convertDate={convertDate} uimageurl={uimageurl} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} username={post.username}></Post>
+				<Post key={post._id} convertDate={convertDate} signedinuser={signedinuser}uimageurl={uimageurl} updatePost={updatePost} deletePost={deletePost} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} username={post.username}></Post>
 			);
 		});
 		return (

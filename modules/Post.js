@@ -67,7 +67,7 @@ export default React.createClass({
 			response.json()
 		).then(data => {	
 			var dataArray = [data];
-			var modifiedComments = dataArray.concat(this.state.comments);
+			var modifiedComments = this.state.comments.concat(dataArray);
 			this.setState({ comments: modifiedComments });
 		}).catch(err => {
 			console.log('Error creating comment', err)
@@ -113,7 +113,7 @@ export default React.createClass({
 					<div className="PostBody">
 						{this.props.body}
 					</div>
-					<CommentList data={this.state.comments} createComment={this.createComment} deleteComment={this.deleteComment} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
+					<CommentList data={this.state.comments} createComment={this.createComment} deleteComment={this.deleteComment} signedinuser={this.props.signedinuser} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
 				</div>
 
 				<Modal show={this.state.showUpdatePostModal} onHide={this.closeUpdatePostModal}>

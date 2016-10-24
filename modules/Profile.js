@@ -35,7 +35,7 @@ var Post = React.createClass({
       response.json()
     ).then(data => {  
       var dataArray = [data];
-      var modifiedComments = dataArray.concat(this.state.comments);
+      var modifiedComments = this.state.comments.concat(dataArray);
       this.setState({ comments: modifiedComments });
     }).catch(err => {
       console.log('Error creating comment', err)
@@ -67,6 +67,35 @@ var Post = React.createClass({
     this.props.deletePost(this.props.id);
   },
 
+  convertDate: function(date) {
+    var dd = date.getDate();
+    var mm = date.getMonth()+1; //January is 0
+    var yyyy = date.getFullYear();
+    var hours = date.getHours();
+    var mins = date.getMinutes();
+
+    if(dd<10) {
+      dd='0'+dd;
+    } 
+    if(mm<10) {
+      mm='0'+mm;
+    }
+    if(mins<10) {
+      mins='0'+mins;
+    }
+    if(hours<=12) {
+      hours=hours;
+      mins=mins+'am';
+    } 
+    if(hours>12) {
+      hours=hours-12;
+      mins=mins+'pm';
+    }
+
+    date = mm+'/'+dd+'/'+yyyy+' '+hours+':'+mins ; 
+    return date;
+  },
+
   render: function() {
     return (
       <div className="PostBox">
@@ -79,7 +108,7 @@ var Post = React.createClass({
         <div className="PostBody">
           {this.props.body}
         </div>
-        <CommentList data={this.state.comments} createComment={this.createComment} deleteComment={this.deleteComment} uimageurl={this.props.uimageurl} convertDate={this.props.convertDate} postid={this.props.id} username={this.props.username} />
+        <CommentList data={this.state.comments} createComment={this.createComment} deleteComment={this.deleteComment} signedinuser={this.props.signedinuser} uimageurl={this.props.signedinuser.imageurl} convertDate={this.convertDate} postid={this.props.id} username={this.props.signedinuser.firstname + " " + this.props.signedinuser.lastname} />
       </div>
     );
   }
@@ -88,9 +117,10 @@ var Post = React.createClass({
 
 var PostList = React.createClass({
   render: function() {
+    var signedinuser = this.props.signedinuser;
     var postNodes = this.props.data.map(function(post) {
       return (
-        <Post key={post._id} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
+        <Post key={post._id} signedinuser={signedinuser} id={post._id} title={post.title} body={post.body} timecreated={post.timecreated} ></Post>
       );
     });
     return (
@@ -106,13 +136,25 @@ export default React.createClass({
   getInitialState: function() {
     return { 
       user: [],
+      signedinuser: [],
       posts: []
     };
   },
 
   componentDidMount: function() {
     this.loadUser();
+    this.loadSignedInUser();
     this.loadPosts();
+  },
+
+  loadSignedInUser: function() {
+    fetch('/api/signedinuser/', {credentials: 'include'}).then(response =>
+      response.json()   
+    ).then(data => {
+      this.setState({signedinuser: data});
+    }).catch(err => {
+      console.log(err);
+    });
   },
 
   loadPosts: function() {
@@ -147,7 +189,7 @@ export default React.createClass({
               <div className="HomeProfileBio">{this.state.user.bio}</div>
             </Col>
             <Col md={8}>
-              <PostList data={this.state.posts} />
+              <PostList data={this.state.posts} signedinuser={this.state.signedinuser}/>
             </Col>
     			</Row>
     		</Grid>

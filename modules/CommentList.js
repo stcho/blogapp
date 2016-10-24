@@ -14,7 +14,7 @@ export default React.createClass({
 		var newDate = new Date();
 		//if comment is not null create comment
 		if(this.state.body != "") {
-			this.props.createComment({imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username})
+			this.props.createComment({imageurl: this.props.uimageurl, body: this.state.body, timecreated: this.props.convertDate(newDate), postid: this.props.postid, username: this.props.username, userid: this.props.signedinuser._id})
 			this.setState({ body: "" }, function () {
 			    // clear comment input value
 			    document.getElementById("CommentInput").value = "";
@@ -30,7 +30,7 @@ export default React.createClass({
 		var deleteComment = this.props.deleteComment;
 		var commentNodes = this.props.data.map(function(comment) {
 			return (
-				<Comment key={comment._id} deleteComment={deleteComment} id={comment._id} imageurl={comment.imageurl} username={comment.username} body={comment.body} timecreated={comment.timecreated}></Comment>
+				<Comment key={comment._id} deleteComment={deleteComment} id={comment._id} imageurl={comment.imageurl} userid={comment.userid} username={comment.username} body={comment.body} timecreated={comment.timecreated}></Comment>
 			);
 		});
 		return (

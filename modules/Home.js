@@ -156,7 +156,7 @@ export default React.createClass({
 							</div>
 						</Col>
 						<Col md={8}>
-							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost} uimageurl={this.props.user.imageurl} convertDate={this.convertDate} />							
+							<PostList data={this.state.posts} deletePost={this.deletePost} updatePost={this.updatePost} signedinuser={this.props.user} uimageurl={this.props.user.imageurl} convertDate={this.convertDate} />							
 						</Col>
 					</Row>
 				</Grid>

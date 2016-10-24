@@ -7,7 +7,7 @@ export default React.createClass({
 	},
 
 	render: function() {
-		var profilePath = '#';
+		var profilePath = '/profile/'+this.props.userid;
 		return (
 			<div className="Comment">
 				<img className="CommentImg" src={this.props.imageurl} alt="Commenter picture" height="30" width="30" />
